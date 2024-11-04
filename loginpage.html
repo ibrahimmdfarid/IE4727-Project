@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            min-height: 100px;
+        }
+        header img {
+            height: 50px;
+        }
+        header .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .centered-text {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .label {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .forgot-password {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .sign-in-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .sign-up {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html"><img src="logo.png" alt="Store Logo"></a>
+    <div class="buttons">
+        <a href="loginpage.html"><button>Login</button></a>
+        <button>Cart</button>
+    </div>
+</header>
+
+<div class="container">
+    <div class="centered-text">Log In</div>
+
+    <div class="label">E-Mail</div>
+    <input type="email" class="input-field" placeholder="Enter your email" required>
+
+    <div class="label">Password</div>
+    <input type="password" class="input-field" placeholder="Enter your password" required>
+
+    <div class="forgot-password"><a href="#">Forgot your password?</a></div>
+
+    <button class="sign-in-button">Sign In</button>
+
+    <div class="sign-up">
+        <a href="signup_page.html">
+            <button style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                Don't have an account? Sign up here!
+            </button>
+        </a>
+    </div>
+</div>
+
+<footer>
+    <p>Store Address: 123 Main Street, City, Country</p>
+    <p>Contact Number: +123 456 7890</p>
+</footer>
+
+</body>
+</html>
