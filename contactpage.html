@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            min-height: 100px;
+        }
+        header img {
+            height: 50px;
+        }
+        header .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+        .faq-link {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .faq-link:hover {
+            background-color: #e0e7ff;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .input-field, .textarea-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .textarea-field {
+            resize: vertical;
+        }
+        .submit-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        footer a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const bodyField = document.getElementById("body");
+            if (bodyField.value.length > 1000) {
+                alert("Body cannot exceed 1000 characters.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+
+<header>
+    <a href="index.html"><img src="logo.png" alt="Store Logo"></a>
+    <div class="buttons">
+        <a href="loginpage.html"><button>Login</button></a>
+        <button>Cart</button>
+    </div>
+</header>
+
+<div class="container">
+    <!-- FAQ Link -->
+    <a href="faqpage.html" class="faq-link">FAQ</a>
+
+    <!-- Contact Form Section -->
+    <div class="section-title">Contact Us</div>
+    
+    <form onsubmit="return validateForm()">
+        <div class="form-group">
+            <label class="label" for="subject">Subject:</label>
+            <input type="text" id="subject" class="input-field" placeholder="Enter subject" required>
+        </div>
+        <div class="form-group">
+            <label class="label" for="body">Body:</label>
+            <textarea id="body" class="textarea-field" rows="5" placeholder="Describe your issue (max 1000 characters)" maxlength="1000" required></textarea>
+        </div>
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
+</div>
+
+<footer>
+    <p>Store Address: 123 Main Street, City, Country</p>
+    <p>Contact Number: +123 456 7890</p>
+    <p><a href="contactpage.html">Contact Us!</a></p>
+</footer>
+
+</body>
+</html>
