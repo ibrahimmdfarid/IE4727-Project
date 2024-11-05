@@ -87,42 +87,53 @@
 </div>
 
 <div class="main-content">
-    <!-- Product 1 -->
-    <div class="product">
-        <img src="product1.jpg" alt="Product 1">
-        <h3>Product Name 1</h3>
-        <p>Price: $100</p>
-    </div>
-    <!-- Product 2 -->
-    <div class="product">
-        <img src="product2.jpg" alt="Product 2">
-        <h3>Product Name 2</h3>
-        <p>Price: $200</p>
-    </div>
-    <!-- Product 3 -->
-    <div class="product">
-        <img src="product3.jpg" alt="Product 3">
-        <h3>Product Name 3</h3>
-        <p>Price: $150</p>
-    </div>
-    <!-- Product 4 -->
-    <div class="product">
-        <img src="product4.jpg" alt="Product 4">
-        <h3>Product Name 4</h3>
-        <p>Price: $120</p>
-    </div>
-    <!-- Product 5 -->
-    <div class="product">
-        <img src="product5.jpg" alt="Product 5">
-        <h3>Product Name 5</h3>
-        <p>Price: $180</p>
-    </div>
-    <!-- Product 6 -->
-    <div class="product">
-        <img src="product6.jpg" alt="Product 6">
-        <h3>Product Name 6</h3>
-        <p>Price: $220</p>
-    </div>
+    <!-- Products will be dynamically inserted here -->
+    <script>
+        // Simulated database response (to be replaced with actual backend call)
+        const products = [
+            // Example structure: { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg" }
+            { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg" },
+            { product_id: 2, name: "Product Name 2", price: 200, image_url: "product2.jpg" },
+            { product_id: 3, name: "Product Name 3", price: 150, image_url: "product3.jpg" },
+            { product_id: 4, name: "Product Name 4", price: 120, image_url: "product4.jpg" },
+            { product_id: 5, name: "Product Name 5", price: 180, image_url: "product5.jpg" },
+            { product_id: 6, name: "Product Name 6", price: 220, image_url: "product6.jpg" },
+        ];
+
+        // Function to dynamically create product elements
+        function displayProducts(products) {
+            const mainContent = document.querySelector('.main-content');
+            products.forEach(product => {
+                // Create product div
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+
+                // Create image element
+                const img = document.createElement('img');
+                img.src = product.image_url; // Updated to use image_url
+                img.alt = product.name;
+
+                // Create name element
+                const productName = document.createElement('h3');
+                productName.textContent = product.name;
+
+                // Create price element
+                const productPrice = document.createElement('p');
+                productPrice.textContent = `Price: $${product.price}`;
+
+                // Append all elements to productDiv
+                productDiv.appendChild(img);
+                productDiv.appendChild(productName);
+                productDiv.appendChild(productPrice);
+
+                // Append productDiv to mainContent
+                mainContent.appendChild(productDiv);
+            });
+        }
+
+        // Call function to display products
+        displayProducts(products);
+    </script>
 </div>
 
 <footer>
