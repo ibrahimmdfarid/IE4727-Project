@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ</title>
+    <link rel="stylesheet" href="styles.css">
+
     <style>
         html, body {
             height: 100%;
@@ -68,6 +70,10 @@
             border: 1px solid #ddd;
         }
     
+        h1 {
+            text-align: left;
+        }
+
         .faq-item {
             margin-bottom: 15px;
             border-bottom: 1px solid #ddd;
@@ -134,7 +140,13 @@
 <body>
 
 <header>
-    <a href="index.html"><img src="images\store_logo.png" alt="Store Logo"></a>
+    <a href="index.html"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search for products...">
+        <button class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+        </button>
+    </div>
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.html"><button>Cart</button></a>

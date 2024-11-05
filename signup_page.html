@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
+    <link rel="stylesheet" href="styles.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -142,6 +144,7 @@
             box-sizing: border-box;
         }
         .sign-up-button {
+            margin-top: 15px;
             width: 100%;
             padding: 10px;
             background-color: #28a745;
@@ -177,7 +180,13 @@
 <body>
 
 <header>
-    <a href="index.html"><img src="images\store_logo.png" alt="Store Logo"></a>
+    <a href="index.html"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search for products...">
+        <button class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+        </button>
+    </div>
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.html"><button>Cart</button></a>
