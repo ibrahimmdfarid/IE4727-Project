@@ -91,7 +91,6 @@
     <script>
         // Simulated database response (to be replaced with actual backend call)
         const products = [
-            // Example structure: { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg" }
             { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg" },
             { product_id: 2, name: "Product Name 2", price: 200, image_url: "product2.jpg" },
             { product_id: 3, name: "Product Name 3", price: 150, image_url: "product3.jpg" },
@@ -108,9 +107,13 @@
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product';
 
+                // Create anchor element for product link
+                const productLink = document.createElement('a');
+                productLink.href = `productpage.html?product_id=${product.product_id}`; // Link to product page
+
                 // Create image element
                 const img = document.createElement('img');
-                img.src = product.image_url; // Updated to use image_url
+                img.src = product.image_url;
                 img.alt = product.name;
 
                 // Create name element
@@ -121,10 +124,13 @@
                 const productPrice = document.createElement('p');
                 productPrice.textContent = `Price: $${product.price}`;
 
-                // Append all elements to productDiv
-                productDiv.appendChild(img);
-                productDiv.appendChild(productName);
-                productDiv.appendChild(productPrice);
+                // Append elements to the product link
+                productLink.appendChild(img);
+                productLink.appendChild(productName);
+                productLink.appendChild(productPrice);
+
+                // Append productLink to productDiv
+                productDiv.appendChild(productLink);
 
                 // Append productDiv to mainContent
                 mainContent.appendChild(productDiv);
