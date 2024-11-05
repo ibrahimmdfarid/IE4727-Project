@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
         }
+    
         header {
             display: flex;
             justify-content: space-between;
@@ -20,15 +21,18 @@
             border-bottom: 1px solid #ddd;
             min-height: 100px;
         }
+    
         header img {
             height: 50px;
         }
+    
         header .buttons {
             display: flex;
             gap: 15px;
         }
+    
         header .buttons button {
-            padding: 10px 15px; /* Vertical and horizontal padding */
+            padding: 10px 15px;
             background-color: #369836; /* Primary color for buttons */
             color: white; /* Text color */
             border: none; /* Remove default border */
@@ -37,52 +41,25 @@
             transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
             font-size: 16px; /* Font size */
         }
-
+    
         header .buttons button:hover {
             background-color: #2a7323; /* Darker shade for hover effect */
             transform: translateY(-2px); /* Slight lift effect on hover */
         }
-
+    
         header .buttons button:active {
             transform: translateY(1px); /* Button presses down on click */
         }
-
-        header .buttons a {
-            text-decoration: none; /* Remove underline from links */
-        }
-
+    
         header .buttons button:disabled {
             background-color: #a5d8a3; /* Light grayish-green for disabled state */
             cursor: not-allowed; /* Not-allowed cursor for disabled button */
         }
-        header .buttons button {
-            padding: 10px 15px; /* Vertical and horizontal padding */
-            background-color: #369836; /* Primary color for buttons */
-            color: white; /* Text color */
-            border: none; /* Remove default border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor on hover */
-            transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
-            font-size: 16px; /* Font size */
-        }
-
-        header .buttons button:hover {
-            background-color: #2a7323; /* Darker shade for hover effect */
-            transform: translateY(-2px); /* Slight lift effect on hover */
-        }
-
-        header .buttons button:active {
-            transform: translateY(1px); /* Button presses down on click */
-        }
-
+    
         header .buttons a {
             text-decoration: none; /* Remove underline from links */
         }
-
-        header .buttons button:disabled {
-            background-color: #a5d8a3; /* Light grayish-green for disabled state */
-            cursor: not-allowed; /* Not-allowed cursor for disabled button */
-        }
+    
         .container {
             display: flex;
             max-width: 1200px;
@@ -92,52 +69,85 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+    
         .product-image {
             width: 420px; /* Fixed width for the image */
             height: auto;
             object-fit: cover;
         }
+    
         .product-details {
             margin-left: 20px; /* Space between image and details */
             flex-grow: 1; /* Allow details to take remaining space */
         }
+    
         .product-details h1 {
             font-size: 24px;
             margin: 0;
         }
+    
         .product-details p {
             font-size: 18px;
         }
+    
         .add-to-cart {
             margin-top: 20px;
             display: flex;
             align-items: center;
         }
+        
+        .add-to-cart-btn {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 20px;
+        }
+    
         .quantity-controls {
             display: flex;
             align-items: center;
         }
+    
         .quantity-controls button {
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             padding: 5px 10px;
             cursor: pointer;
         }
+    
         .quantity-controls input {
             width: 60px; 
             text-align: center; 
             margin: 0 10px;
             border: 1px solid #ddd; 
         }
+    
         footer {
             text-align: center;
             padding: 20px;
-            background-color: #f8f8f8;
+            background-color: #232F3E;
+            color: #FFFFFF; 
             border-top: 1px solid #ddd;
-            margin-top: 20px;
+        }
+    
+        footer a {
+            color: #FFFFFF; /* Text color */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Make the text bold */
+            padding: 5px 10px; /* Add some padding */
+            border-radius: 5px; /* Rounded corners */
+        }
+    
+        footer a:hover {
+            text-decoration: underline; /* Underline the text on hover */
+            color: #A8D08D; /* Change text color on hover */
         }
     </style>
-</head>
+    </head>
 <body>
 
 <header>
@@ -162,7 +172,9 @@
                 <input type="number" id="quantity" value="1" min="1" max="99" step="1" style="margin: 0 5px;">
                 <button id="increment">+</button>
             </div>
-            <button id="add-to-cart-btn" style="margin-left: 20px;">Add to Cart</button>
+            <button class="add-to-cart-btn">Add to Cart</button>
+
+            <!-- <button id="add-to-cart-btn" style="margin-left: 20px;">Add to Cart</button> -->
         </div>
     </div>
 </div>
