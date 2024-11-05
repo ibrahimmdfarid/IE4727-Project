@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            min-height: 100px;
+        }
+        header img {
+            height: 50px;
+        }
+        header .buttons {
+            display: flex;
+            gap: 15px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .faq-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .question {
+            font-weight: bold;
+            cursor: pointer;
+            color: #007bff;
+        }
+        .answer {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .answer.visible {
+            display: block;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        footer a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+    <script>
+        // Function to toggle answer visibility
+        function toggleAnswer(id) {
+            const answerElement = document.getElementById(id);
+            answerElement.classList.toggle('visible');
+        }
+
+        // Function to initialize FAQ questions with numbering
+        function initializeFAQs() {
+            const questions = document.querySelectorAll('.faq-item .question');
+            questions.forEach((question, index) => {
+                question.textContent = `${index + 1}) ${question.textContent}`;
+            });
+        }
+
+        // Initialize FAQs when the page loads
+        window.onload = initializeFAQs;
+    </script>
+</head>
+<body>
+
+<header>
+    <a href="index.html"><img src="logo.png" alt="Store Logo"></a>
+    <div class="buttons">
+        <a href="loginpage.html"><button>Login</button></a>
+        <button>Cart</button>
+    </div>
+</header>
+
+<div class="container">
+    <h1>Frequently Asked Questions</h1>
+
+    <!-- FAQ Items - Placeholders for dynamic content -->
+    <div class="faq-item">
+        <p class="question" onclick="toggleAnswer('answer1')">How do I create an account?</p>
+        <div id="answer1" class="answer">
+            <p>To create an account, click on the "Sign Up" button at the top of the page, fill out the form with your details, and submit.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <p class="question" onclick="toggleAnswer('answer2')">This is question 2?</p>
+        <div id="answer2" class="answer">
+            <p>This is the answer to question 2, which provides details and instructions for users.</p>
+        </div>
+    </div>
+    <!-- End of Example Structure -->
+</div>
+
+<footer>
+    <p>Store Address: 123 Main Street, City, Country</p>
+    <p>Contact Number: +123 456 7890</p>
+    <p><a href="contactpage.html">Contact Us!</a></p>
+</footer>
+
+</body>
+</html>
