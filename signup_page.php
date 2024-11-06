@@ -195,17 +195,18 @@
     
 <div class="container">
     <div class="centered-text">Sign Up</div>
-
-    <div class="label">E-Mail</div>
-    <input type="email" class="input-field" placeholder="Enter your email" required>
-
-    <div class="label">Password</div>
-    <input type="password" class="input-field" placeholder="Enter your password" required>
-
-    <div class="label">Confirm Password</div>
-    <input type="password" class="input-field" placeholder="Confirm your password" required>
-
-    <button class="sign-up-in-button">Sign Up</button>
+    <form method="POST" action="">
+        <div class="label">E-Mail</div>
+        <input type="email" class="input-field" id="email" name="email" placeholder="Enter your email" required>
+        
+        <div class="label">Password</div>
+        <input type="password" class="input-field" id="password" name="password" placeholder="Enter your password" required>
+        
+        <div class="label">Confirm Password</div>
+        <input type="password" class="input-field" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+        
+        <button type="submit" name="signup" class="sign-up-in-button">Sign Up</button>
+    </form>
 
     <div style="text-align: center; margin-top: 15px;">
         <a href="loginpage.html">
@@ -219,6 +220,58 @@
     <p>Contact Number: +123 456 7890</p>
     <p><a href="contactpage.html">Contact Us!</a></p>
 </footer>
+
+<?php
+if (isset($_POST['signup'])) {
+    // Get form data
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Check if passwords match
+    if ($password !== $confirm_password) {
+        echo "<p style='color: red;'>Passwords do not match.</p>";
+        exit();
+    }
+
+    // Hash the password for secure storage
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    // Create database connection
+    $conn = new mysqli('localhost', 'root', '', 'project');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Check if the email already exists
+    $sql = "SELECT * FROM Users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Email already exists
+        echo "<script>alert('This email is already registered. Please use a different email');</script>";
+    } else {
+        // Insert data into Users table
+        $sql = "INSERT INTO Users (email, password) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $email, $hashed_password);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Sign up successful!');</script>";
+        } else {
+            echo "<script>alert('Error: " . $stmt->error . "');</script>";
+        }
+    }
+    // Close connections
+    $stmt->close();
+    $conn->close();
+}
+?>
 
 </body>
 </html>

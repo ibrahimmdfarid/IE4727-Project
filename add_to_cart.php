@@ -45,7 +45,8 @@ if ($product_exists) {
 
 $stmt->execute();
 $stmt->close();
-
-echo "Product added to cart successfully!";
 $conn->close();
+
+echo "<script>alert('Product added to cart successfully!');</script>";
+echo "<script>window.location.href = 'index.php';</script>";
 ?>

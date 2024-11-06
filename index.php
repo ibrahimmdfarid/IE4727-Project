@@ -31,7 +31,7 @@ session_start();
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
         <?php endif; ?>
-        <a href="cartpage.html"><button>Cart</button></a>
+        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
     
