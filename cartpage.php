@@ -106,7 +106,7 @@ $total_price = 0;
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td>
                     <!-- Form to update quantity -->
-                    <form method="POST" action="cart.php" style="display: inline;">
+                    <form method="POST" action="cartpage.php" style="display: inline;">
                         <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
                         <button type="submit" name="quantity" value="<?php echo $row['quantity'] - 1; ?>">-</button>
                         <?php echo htmlspecialchars($row['quantity']); ?>
@@ -117,7 +117,7 @@ $total_price = 0;
                 <td>$<?php echo number_format($subtotal, 2); ?></td>
                 <td>
                     <!-- Form to remove product -->
-                    <form method="POST" action="cart.php" style="display: inline;">
+                    <form method="POST" action="cartpage.php" style="display: inline;">
                         <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
                         <button type="submit" name="remove" value="1">Remove</button>
                     </form>
@@ -133,7 +133,7 @@ $total_price = 0;
             <p id="shipping-fee">Shipping Fee: $0.00</p>
             <p id="grand-total">Grand Total: $0.00</p>
             <?php $_SESSION['total_price'] = $total_price; ?>
-            <form method="POST" action="checkout.php">
+            <form method="POST" action="checkoutpage.php">
                 <button class="checkout-btn" id="checkout-btn" type="submit">Proceed to Checkout</button>
             </form>
         </div>
