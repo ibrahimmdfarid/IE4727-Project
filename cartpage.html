@@ -1,0 +1,132 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search for products...">
+        <button class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+        </button>
+    </div>
+    <div class="buttons">
+        <a href="loginpage.html"><button>Login</button></a>
+        <a href="cartpage.html"><button>Cart</button></a>
+    </div>
+</header>
+    
+<div class="container">
+    <h1>Your Shopping Cart</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="cart-items">
+            <!-- Cart items will be dynamically injected here -->
+        </tbody>
+    </table>
+
+    <div class="summary">
+        <h3>Cart Summary</h3>
+        <p id="total-price">Total Price: $0.00</p>
+        <p id="shipping-fee">Shipping Fee: $0.00</p>
+        <p id="grand-total">Grand Total: $0.00</p>
+        <button class="checkout-btn" id="checkout-btn" onclick="window.location.href='checkoutpage.html'">Proceed to Checkout</button>
+    </div>
+    
+</div>
+
+<footer>
+    <p>Store Address: 123 Main Street, City, Country</p>
+    <p>Contact Number: +123 456 7890</p>
+    <p><a href="contactpage.html">Contact Us!</a></p>
+</footer>
+
+<script>
+    // Simulated database response (to be replaced with actual backend call)
+    const products = [
+        { product_id: 1, name: "Product Name 1", price: 100.00, image_url: "images/product1.jpg" },
+        { product_id: 2, name: "Product Name 2", price: 200.00, image_url: "images/product2.jpg" },
+        { product_id: 3, name: "Product Name 3", price: 150.00, image_url: "images/product3.jpg" },
+        { product_id: 4, name: "Product Name 4", price: 120.00, image_url: "images/product4.jpg" },
+        { product_id: 5, name: "Product Name 5", price: 180.00, image_url: "images/product5.jpg" },
+        { product_id: 6, name: "Product Name 6", price: 220.00, image_url: "images/product6.jpg" },
+    ];
+
+    // Sample cart items (to be replaced with actual data from the database)
+    const cartItems = [
+        { cart_item_id: 1, user_id: 1, product_id: 1, quantity: 2 },
+        { cart_item_id: 2, user_id: 1, product_id: 2, quantity: 1 },
+        { cart_item_id: 3, user_id: 1, product_id: 3, quantity: 3 },
+        { cart_item_id: 4, user_id: 1, product_id: 4, quantity: 1 },
+    ];
+
+    function loadCart() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        cartItemsContainer.innerHTML = ''; // Clear existing rows
+        let totalPrice = 0;
+
+        cartItems.forEach(item => {
+            const product = products.find(p => p.product_id === item.product_id);
+            const totalItemPrice = product.price * item.quantity;
+            totalPrice += totalItemPrice;
+
+            // Append cart item to the table
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><img src="${product.image_url}" alt="${product.name}" class="product-image"></td>
+                <td>${product.name}</td>
+                <td>
+                    <input type="number" value="${item.quantity}" min="1" style="width: 60px;">
+                </td>
+                <td>$${product.price.toFixed(2)}</td>
+                <td>$${totalItemPrice.toFixed(2)}</td>
+                <td><button onclick="removeItem(${item.cart_item_id})">Remove</button></td>
+            `;
+            cartItemsContainer.appendChild(row);
+        });
+
+        // Update summary
+        updateCartSummary(totalPrice);
+    }
+
+
+    function updateCartSummary(totalPrice) {
+        let shippingFee = totalPrice < 50 ? 4.99 : 0.00;
+        const grandTotal = totalPrice + shippingFee;
+
+        document.getElementById('total-price').textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+        document.getElementById('shipping-fee').textContent = `Shipping Fee: $${shippingFee.toFixed(2)}`;
+        document.getElementById('grand-total').textContent = `Grand Total: $${grandTotal.toFixed(2)}`;
+    }
+
+    function removeItem(cart_item_id) {
+        // Logic to remove the item from the cart
+        console.log(`Remove item with ID: ${cart_item_id}`);
+        // Reload the cart after removal
+        loadCart();
+    }
+
+    // Initial load of the cart
+    loadCart();
+</script>
+
+</body>
+</html>
