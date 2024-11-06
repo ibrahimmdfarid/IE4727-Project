@@ -104,6 +104,7 @@ header .buttons button:disabled {
     height: auto;             /* Maintain aspect ratio */
     flex-shrink: 0;
     object-fit: contain;      /* Ensure full image without cropping */
+    border-radius: 3px;      /* Slightly rounded edges */
 }
 
 /* Styling for the dots */
