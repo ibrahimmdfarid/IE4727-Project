@@ -1,11 +1,11 @@
 // Simulated database response (to be replaced with actual backend call)
 const products = [
-    { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg" },
-    { product_id: 2, name: "Product Name 2", price: 200, image_url: "product2.jpg" },
-    { product_id: 3, name: "Product Name 3", price: 150, image_url: "product3.jpg" },
-    { product_id: 4, name: "Product Name 4", price: 120, image_url: "product4.jpg" },
-    { product_id: 5, name: "Product Name 5", price: 180, image_url: "product5.jpg" },
-    { product_id: 6, name: "Product Name 6", price: 220, image_url: "product6.jpg" },
+    { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg", category_id: 1 },
+    { product_id: 2, name: "Product Name 2", price: 200, image_url: "product2.jpg", category_id: 2 },
+    { product_id: 3, name: "Product Name 3", price: 150, image_url: "product3.jpg", category_id: 3 },
+    { product_id: 4, name: "Product Name 4", price: 120, image_url: "product4.jpg", category_id: 2 },
+    { product_id: 5, name: "Product Name 5", price: 180, image_url: "product5.jpg", category_id: 1 },
+    { product_id: 6, name: "Product Name 6", price: 220, image_url: "product6.jpg", category_id: 3 },
 ];
 
 // Function to dynamically create product elements
@@ -57,11 +57,18 @@ function displayProducts(products) {
 }
 
 // Function to filter products based on search query
-function filterProducts(searchQuery) {
+function filterProducts(searchQuery, categoryId) {
+    let filteredProducts = products;
+
     if (searchQuery) {
-        return products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
     }
-    return products; // If no search query, return all products
+
+    if (categoryId) {
+        filteredProducts = filteredProducts.filter(product => product.category_id === parseInt(categoryId));
+    }
+
+    return filteredProducts;
 }
 
 // Function to initialize rotating banner functionality
@@ -97,16 +104,34 @@ function initBannerAnimation() {
     });
 }
 
+// Event listener for category clicks
+document.querySelectorAll('.category').forEach(category => {
+    category.addEventListener('click', function() {
+        const categoryId = category.getAttribute('data-category-id');
+        
+        // Get the search query from the URL (if any)
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+
+        // Filter products based on the category ID and search query
+        const filteredProducts = filterProducts(searchQuery, categoryId);
+
+        // Display the filtered products
+        displayProducts(filteredProducts);
+    });
+});
+
 // Call functions to initialize content and banner animation on page load
 document.addEventListener('DOMContentLoaded', () => {
-    // Get the search query from the URL (if any)
+    // Get the search query and category from the URL (if any)
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('search');
+    const categoryId = urlParams.get('category_id');
 
-    // Filter products based on the search query
-    const filteredProducts = filterProducts(searchQuery);
+    // Filter products based on the search query and category ID
+    const filteredProducts = filterProducts(searchQuery, categoryId);
 
-    // Display filtered products (or no results message if no products found)
+    // Display filtered products
     displayProducts(filteredProducts);
 
     // Initialize banner animation

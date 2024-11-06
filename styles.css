@@ -86,6 +86,17 @@ header .buttons button:disabled {
     border-bottom: 1px solid #ddd;
 }
 
+/* Styles to handle the hover effect on category spans */
+.categories .category {
+    cursor: pointer; /* Change cursor to pointer when hovering */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.categories .category:hover {
+    color: #369836; /* Change text color to blue (or any color you prefer) */
+}
+
+
 /* Banner container styling */
 .banner-container {
     width: 60%;               /* Container width */
