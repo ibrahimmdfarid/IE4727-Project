@@ -164,8 +164,8 @@
         </button>
     </div>
     <div class="buttons">
-        <a href="loginpage.html"><button>Login</button></a>
-        <a href="cartpage.html"><button>Cart</button></a>
+        <a href="loginpage.php"><button>Login</button></a>
+        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
     
@@ -183,8 +183,13 @@
                 <input type="text" id="quantity" value="1" style="margin: 0 5px; width: 50px;" maxlength="3">
                 <button id="increment">+</button>
             </div>
-            <button class="add-to-cart-btn">Add to Cart</button>
-
+            <form method="POST" action="add_to_cart.php">
+                <input type="hidden" name="product_id" value="1"> <!-- Change this -->
+                <input type="hidden" name="product_name" value="iPad">
+                <input type="hidden" name="product_price" value="999">
+                <input type="hidden" id="selected_quantity" name="quantity" value="1">
+                <button type="submit" class="add-to-cart-btn" onclick="document.getElementById('selected_quantity').value = document.getElementById('quantity').value;">Add to Cart</button>
+            </form>
             <!-- <button id="add-to-cart-btn" style="margin-left: 20px;">Add to Cart</button> -->
         </div>
     </div>
