@@ -1,6 +1,7 @@
 <?php
 // Start the session
 session_start();
+<<<<<<< HEAD
 
 // Database credentials
 $servername = "localhost";
@@ -49,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Close the database connection
 $conn->close();
+=======
+>>>>>>> 03e585758dfcd7c4a5a41d356e8408fa300bde64
 ?>
 
 <!DOCTYPE html>
@@ -279,6 +282,7 @@ $conn->close();
     <form method="POST">
         <div class="form-group">
             <label class="label" for="name">Name:</label>
+<<<<<<< HEAD
             <input type="text" name="name" id="name" class="input-field" value="<?= htmlspecialchars($_SESSION['user_name'] ?? '') ?>" readonly>
         </div>
         <div class="form-group">
@@ -288,6 +292,17 @@ $conn->close();
         <div class="form-group">
             <label class="label" for="address">Address:</label>
             <textarea name="address" id="address" class="input-field" rows="3" readonly><?= htmlspecialchars($_SESSION['user_address'] ?? '') ?></textarea>
+=======
+            <input type="text" id="name" class="input-field" value="<?= htmlspecialchars($_SESSION['user_name']) ?>" readonly>
+        </div>
+        <div class="form-group">
+            <label class="label" for="email">Email:</label>
+            <input type="email" id="email" class="input-field" value="<?= htmlspecialchars($_SESSION['user_email']) ?>" readonly>
+        </div>
+        <div class="form-group">
+            <label class="label" for="address">Address:</label>
+            <textarea id="address" class="input-field" rows="3" readonly><?= htmlspecialchars($_SESSION['user_address']) ?></textarea>
+>>>>>>> 03e585758dfcd7c4a5a41d356e8408fa300bde64
         </div>
 
         <!-- Button Group -->
