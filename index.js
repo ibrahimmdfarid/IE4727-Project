@@ -9,10 +9,18 @@ const products = [
 ];
 
 // Function to dynamically create product elements
-function displayProducts(products) {
+function displayProducts(products, searchQuery) {
     const mainContent = document.querySelector('.main-content');
     mainContent.innerHTML = ''; // Clear current content
 
+    // Display the search result message
+    const resultMessage = document.createElement('p');
+    if (searchQuery) {
+        const numProducts = products.length;
+        resultMessage.textContent = `${numProducts} product(s) found for "${searchQuery}".`;
+        mainContent.appendChild(resultMessage);
+    }
+    
     // If no products match the search query, show the message
     if (products.length === 0) {
         const noResultsMessage = document.createElement('p');
