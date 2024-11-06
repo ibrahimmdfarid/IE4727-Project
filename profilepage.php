@@ -28,16 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get updated profile data
     $updated_name = $_POST['name'];
     $updated_address = $_POST['address'];
+    $updated_card_details = $_POST['card_details'];
 
     // Update the database with the new profile data
-    $sql = "UPDATE users SET name = ?, address = ? WHERE email = ?";
+    $sql = "UPDATE users SET name = ?, address = ?, card_details = ? WHERE email = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $updated_name, $updated_address, $_SESSION['user_email']);
+    $stmt->bind_param("ssss", $updated_name, $updated_address, $updated_card_details, $_SESSION['user_email']);
 
     if ($stmt->execute()) {
         // Update session variables with new values
         $_SESSION['user_name'] = $updated_name;
         $_SESSION['user_address'] = $updated_address;
+        $_SESSION['user_card_details'] = $updated_card_details;
 
         echo "<script>alert('Profile updated successfully.');</script>";
     } else {
@@ -59,6 +61,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Information</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="profilepage.js" defer></script>
     <style>
         body {
             margin: 0;
@@ -210,43 +213,6 @@ $conn->close();
             color: #A8D08D; /* Change text color on hover */
         }
     </style>
-    <script>
-        let isEditMode = false;  // Flag to track whether in edit mode or not
-        let initName = '';
-        let initAddress = '';
-
-        function toggleEditMode() {
-            initName = document.getElementById('name').value;
-            initAddress = document.getElementById('address').value;
-            
-            const inputs = document.querySelectorAll('.input-field');
-            const editButton = document.getElementById('editButton');
-            const cancelButton = document.getElementById('cancelButton');
-            const saveButton = document.getElementById('saveButton');
-
-            if (isEditMode) {  // If currently in edit mode
-                inputs.forEach(input => input.setAttribute('readonly', true));
-                editButton.style.display = 'inline-block';
-                cancelButton.style.display = 'none';
-                saveButton.style.display = 'none';
-            } else {  // If currently not in edit mode
-                inputs.forEach(input => input.removeAttribute('readonly'));
-                editButton.style.display = 'none';
-                cancelButton.style.display = 'inline-block';
-                saveButton.style.display = 'inline-block';
-            }
-
-            // Toggle the flag
-            isEditMode = !isEditMode;
-        }
-
-        function cancelEdit() {
-            // Revert back to original values if cancel is clicked
-            document.getElementById('name').value = initName;
-            document.getElementById('address').value = initAddress;
-            toggleEditMode();  // Close edit mode
-        }
-    </script>
 </head>
 <body>
 
@@ -269,14 +235,14 @@ $conn->close();
         <?php endif; ?>
         <a href="cartpage.html"><button>Cart</button></a>
     </div>
-</header>
-    
+</header>    
+
 <div class="container">
     <!-- Profile Information Section -->
     <div class="section-title">Profile Information</div>
     
     <!-- Form for updating profile -->
-    <form method="POST">
+    <form method="POST" onsubmit="return validateForm(event)"> <!-- Attach validation to form submission -->
         <div class="form-group">
             <label class="label" for="name">Name:</label>
             <input type="text" name="name" id="name" class="input-field" value="<?= htmlspecialchars($_SESSION['user_name'] ?? '') ?>" readonly>
@@ -288,6 +254,10 @@ $conn->close();
         <div class="form-group">
             <label class="label" for="address">Address:</label>
             <textarea name="address" id="address" class="input-field" rows="3" readonly><?= htmlspecialchars($_SESSION['user_address'] ?? '') ?></textarea>
+        </div>
+        <div class="form-group">
+            <label class="label" for="card_details">Card Details:</label>
+            <input type="text" name="card_details" id="card_details" class="input-field" value="<?= htmlspecialchars($_SESSION['user_card_details'] ?? '') ?>" readonly>
         </div>
 
         <!-- Button Group -->
