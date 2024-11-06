@@ -11,39 +11,57 @@ const products = [
 // Function to dynamically create product elements
 function displayProducts(products) {
     const mainContent = document.querySelector('.main-content');
-    products.forEach(product => {
-        // Create product div
-        const productDiv = document.createElement('div');
-        productDiv.className = 'product';
+    mainContent.innerHTML = ''; // Clear current content
 
-        // Create anchor element for product link
-        const productLink = document.createElement('a');
-        productLink.href = `productpage.html?product_id=${product.product_id}`;
+    // If no products match the search query, show the message
+    if (products.length === 0) {
+        const noResultsMessage = document.createElement('p');
+        noResultsMessage.textContent = "Sorry, no products were found with those keywords.";
+        mainContent.appendChild(noResultsMessage);
+    } else {
+        // Otherwise, display the filtered products
+        products.forEach(product => {
+            // Create product div
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product';
 
-        // Create image element
-        const img = document.createElement('img');
-        img.src = product.image_url;
-        img.alt = product.name;
+            // Create anchor element for product link
+            const productLink = document.createElement('a');
+            productLink.href = `productpage.html?product_id=${product.product_id}`;
 
-        // Create name element
-        const productName = document.createElement('h3');
-        productName.textContent = product.name;
+            // Create image element
+            const img = document.createElement('img');
+            img.src = product.image_url;
+            img.alt = product.name;
 
-        // Create price element
-        const productPrice = document.createElement('p');
-        productPrice.textContent = `Price: $${product.price}`;
+            // Create name element
+            const productName = document.createElement('h3');
+            productName.textContent = product.name;
 
-        // Append elements to the product link
-        productLink.appendChild(img);
-        productLink.appendChild(productName);
-        productLink.appendChild(productPrice);
+            // Create price element
+            const productPrice = document.createElement('p');
+            productPrice.textContent = `Price: $${product.price}`;
 
-        // Append productLink to productDiv
-        productDiv.appendChild(productLink);
+            // Append elements to the product link
+            productLink.appendChild(img);
+            productLink.appendChild(productName);
+            productLink.appendChild(productPrice);
 
-        // Append productDiv to mainContent
-        mainContent.appendChild(productDiv);
-    });
+            // Append productLink to productDiv
+            productDiv.appendChild(productLink);
+
+            // Append productDiv to mainContent
+            mainContent.appendChild(productDiv);
+        });
+    }
+}
+
+// Function to filter products based on search query
+function filterProducts(searchQuery) {
+    if (searchQuery) {
+        return products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    return products; // If no search query, return all products
 }
 
 // Function to initialize rotating banner functionality
@@ -81,6 +99,16 @@ function initBannerAnimation() {
 
 // Call functions to initialize content and banner animation on page load
 document.addEventListener('DOMContentLoaded', () => {
-    displayProducts(products);
+    // Get the search query from the URL (if any)
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+
+    // Filter products based on the search query
+    const filteredProducts = filterProducts(searchQuery);
+
+    // Display filtered products (or no results message if no products found)
+    displayProducts(filteredProducts);
+
+    // Initialize banner animation
     initBannerAnimation();
 });

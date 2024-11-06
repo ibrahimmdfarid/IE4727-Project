@@ -11,12 +11,13 @@
 
 <header>
     <a href="index.html"><img src="images/store_logo.png" alt="Store Logo"></a>
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products...">
-        <button class="search-button">
+    <form class="search-container" method="GET" action="index.html">
+        <input type="text" class="search-bar" name="search" placeholder="Search for products...">
+        <button type="submit" class="search-button">
             <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon">
         </button>
-    </div>
+    </form>
+    
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.html"><button>Cart</button></a>
