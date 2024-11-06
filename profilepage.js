@@ -45,6 +45,9 @@ function toggleEditMode() {
     const editButton = document.getElementById('editButton');
     const cancelButton = document.getElementById('cancelButton');
     const saveButton = document.getElementById('saveButton');
+    
+    const emailInput = document.getElementById('email');
+    emailInput.setAttribute('readonly', true);  // Ensure email remains readonly
 
     if (isEditMode) {  // If currently in edit mode
         inputs.forEach(input => input.setAttribute('readonly', true));
@@ -52,7 +55,11 @@ function toggleEditMode() {
         cancelButton.style.display = 'none';
         saveButton.style.display = 'none';
     } else {  // If currently not in edit mode
-        inputs.forEach(input => input.removeAttribute('readonly'));
+        inputs.forEach(input => {
+            if (input !== emailInput) {  // Allow all fields except email to be editable
+                input.removeAttribute('readonly');
+            }
+        });
         editButton.style.display = 'none';
         cancelButton.style.display = 'inline-block';
         saveButton.style.display = 'inline-block';
