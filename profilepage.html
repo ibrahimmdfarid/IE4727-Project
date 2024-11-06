@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Information</title>
+    <link rel="stylesheet" href="styles.css">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -157,39 +158,18 @@
             color: #A8D08D; /* Change text color on hover */
         }
     </style>
-        <script>
-        let initialValues = {};
-
-        function toggleEditMode() {
-            const isReadOnly = document.getElementById("name").readOnly;
-
-            // Store initial values if entering edit mode
-            if (isReadOnly) {
-                initialValues.name = document.getElementById("name").value;
-                initialValues.email = document.getElementById("email").value;
-                initialValues.address = document.getElementById("address").value;
-            }
-
-            // Toggle read-only state and button visibility
-            document.querySelectorAll(".input-field").forEach(input => input.readOnly = !isReadOnly);
-            document.getElementById("editButton").style.display = isReadOnly ? "none" : "inline-block";
-            document.getElementById("saveButton").style.display = isReadOnly ? "inline-block" : "none";
-            document.getElementById("cancelButton").style.display = isReadOnly ? "inline-block" : "none";
-        }
-
-        function cancelEdit() {
-            // Revert to the initial values if canceling
-            document.getElementById("name").value = initialValues.name;
-            document.getElementById("email").value = initialValues.email;
-            document.getElementById("address").value = initialValues.address;
-            toggleEditMode();
-        }
-    </script>
+<script src="profilepage.js"></script>
 </head>
 <body>
 
 <header>
-    <a href="index.html"><img src="images\store_logo.png" alt="Store Logo"></a>
+    <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search for products...">
+        <button class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+        </button>
+    </div>
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.html"><button>Cart</button></a>

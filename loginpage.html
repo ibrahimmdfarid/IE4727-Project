@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -197,40 +197,43 @@
 <body>
 
 <header>
-    <a href="index.html"><img src="images\store_logo.png" alt="Store Logo"></a>
+    <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search for products...">
+        <button class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+        </button>
+    </div>
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.html"><button>Cart</button></a>
     </div>
 </header>
     
-<div class="container">
-    <div class="centered-text">Log In</div>
+<form method="POST" action="loginpage.php">
+    <div class="container">
+        <div class="centered-text">Log In</div>
 
-    <div class="label">E-Mail</div>
-    <input type="email" class="input-field" placeholder="Enter your email" required>
+        <div class="label">E-Mail</div>
+        <input type="email" name="email" class="input-field" placeholder="Enter your email" required>
 
-    <div class="label">Password</div>
-    <input type="password" class="input-field" placeholder="Enter your password" required>
+        <div class="label">Password</div>
+        <input type="password" name="password" class="input-field" placeholder="Enter your password" required>
 
-    <div class="forgot-password"><a href="#">Forgot your password?</a></div>
+        <div class="forgot-password"><a href="#">Forgot your password?</a></div>
 
-    <button class="sign-in-button">Sign In</button>
-
-    <div class="sign-up">
-        <a href="signup_page.html">
-            <button class="sign-up-button">
-                Don't have an account? Sign up here!
-            </button>
-        </a>
+        <button type="submit" name="login" class="sign-in-button">Sign In</button>
     </div>
-</div>
+</form>
 
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
     <p><a href="contactpage.html">Contact Us!</a></p>
 </footer>
+
+<!-- <script src="loginpage.js"></script> -->
+
 
 </body>
 </html>

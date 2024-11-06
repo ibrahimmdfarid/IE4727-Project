@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
+    <link rel="stylesheet" href="styles.css">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -141,7 +142,8 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
-        .sign-up-button {
+        .sign-up-in-button {
+            margin-top: 15px;
             width: 100%;
             padding: 10px;
             background-color: #28a745;
@@ -151,6 +153,7 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -177,7 +180,13 @@
 <body>
 
 <header>
-    <a href="index.html"><img src="images\store_logo.png" alt="Store Logo"></a>
+    <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search for products...">
+        <button class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+        </button>
+    </div>
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.html"><button>Cart</button></a>
@@ -186,17 +195,24 @@
     
 <div class="container">
     <div class="centered-text">Sign Up</div>
+    <form method="POST" action="">
+        <div class="label">E-Mail</div>
+        <input type="email" class="input-field" id="email" name="email" placeholder="Enter your email" required>
+        
+        <div class="label">Password</div>
+        <input type="password" class="input-field" id="password" name="password" placeholder="Enter your password" required>
+        
+        <div class="label">Confirm Password</div>
+        <input type="password" class="input-field" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+        
+        <button type="submit" name="signup" class="sign-up-in-button">Sign Up</button>
+    </form>
 
-    <div class="label">E-Mail</div>
-    <input type="email" class="input-field" placeholder="Enter your email" required>
-
-    <div class="label">Password</div>
-    <input type="password" class="input-field" placeholder="Enter your password" required>
-
-    <div class="label">Confirm Password</div>
-    <input type="password" class="input-field" placeholder="Confirm your password" required>
-
-    <button class="sign-up-button">Sign Up</button>
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="loginpage.html">
+            <button class="sign-up-in-button">Already have an account? Sign in here!</button>
+        </a>
+    </div>
 </div>
 
 <footer>
@@ -204,6 +220,58 @@
     <p>Contact Number: +123 456 7890</p>
     <p><a href="contactpage.html">Contact Us!</a></p>
 </footer>
+
+<?php
+if (isset($_POST['signup'])) {
+    // Get form data
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Check if passwords match
+    if ($password !== $confirm_password) {
+        echo "<p style='color: red;'>Passwords do not match.</p>";
+        exit();
+    }
+
+    // Hash the password for secure storage
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    // Create database connection
+    $conn = new mysqli('localhost', 'root', '', 'project');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Check if the email already exists
+    $sql = "SELECT * FROM Users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Email already exists
+        echo "<script>alert('This email is already registered. Please use a different email');</script>";
+    } else {
+        // Insert data into Users table
+        $sql = "INSERT INTO Users (email, password) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $email, $hashed_password);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Sign up successful!');</script>";
+        } else {
+            echo "<script>alert('Error: " . $stmt->error . "');</script>";
+        }
+    }
+    // Close connections
+    $stmt->close();
+    $conn->close();
+}
+?>
 
 </body>
 </html>
