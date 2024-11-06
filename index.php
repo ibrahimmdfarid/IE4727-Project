@@ -26,7 +26,7 @@ session_start();
     <div class="buttons">
         <?php if (isset($_SESSION['user_email'])): ?>
             <!-- Show user-specific content if logged in -->
-            <a href="profilepage.html"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
+            <a href="profilepage.php"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>

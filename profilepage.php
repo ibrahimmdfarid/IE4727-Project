@@ -1,3 +1,58 @@
+<?php
+// Start the session
+session_start();
+
+// Database credentials
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "project";
+
+// Create a database connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if user is logged in
+if (!isset($_SESSION['user_email'])) {
+    // Redirect to login page if not logged in
+    header("Location: loginpage.html");
+    exit();
+}
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get updated profile data
+    $updated_name = $_POST['name'];
+    $updated_address = $_POST['address'];
+    $updated_card_details = $_POST['card_details'];
+
+    // Update the database with the new profile data
+    $sql = "UPDATE users SET name = ?, address = ?, card_details = ? WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $updated_name, $updated_address, $updated_card_details, $_SESSION['user_email']);
+
+    if ($stmt->execute()) {
+        // Update session variables with new values
+        $_SESSION['user_name'] = $updated_name;
+        $_SESSION['user_address'] = $updated_address;
+        $_SESSION['user_card_details'] = $updated_card_details;
+
+        echo "<script>alert('Profile updated successfully.');</script>";
+    } else {
+        echo "<script>alert('Error updating profile: " . $conn->error . "');</script>";
+    }
+
+    $stmt->close();
+}
+
+// Close the database connection
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +61,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Information</title>
     <link rel="stylesheet" href="styles.css">
-
+    <script src="profilepage.js" defer></script>
     <style>
         body {
             margin: 0;
@@ -158,55 +213,64 @@
             color: #A8D08D; /* Change text color on hover */
         }
     </style>
-<script src="profilepage.js"></script>
 </head>
 <body>
 
 <header>
     <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products...">
-        <button class="search-button">
-            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+    <form class="search-container" method="GET" action="index.php">
+        <input type="text" class="search-bar" name="search" placeholder="Search for products...">
+        <button type="submit" class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon">
         </button>
-    </div>
+    </form>
+    
     <div class="buttons">
-        <a href="loginpage.html"><button>Login</button></a>
+        <?php if (isset($_SESSION['user_email'])): ?>
+            <!-- Show user-specific content if logged in -->
+            <a href="profilepage.php"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
+        <?php else: ?>
+            <!-- Show login button if not logged in -->
+            <a href="loginpage.html"><button>Login</button></a>
+        <?php endif; ?>
         <a href="cartpage.html"><button>Cart</button></a>
     </div>
-</header>
-    
+</header>    
+
 <div class="container">
     <!-- Profile Information Section -->
     <div class="section-title">Profile Information</div>
     
-    <form>
+    <!-- Form for updating profile -->
+    <form method="POST" onsubmit="return validateForm(event)"> <!-- Attach validation to form submission -->
         <div class="form-group">
             <label class="label" for="name">Name:</label>
-            <input type="text" id="name" class="input-field" value="John Doe" readonly>
+            <input type="text" name="name" id="name" class="input-field" value="<?= htmlspecialchars($_SESSION['user_name'] ?? '') ?>" readonly>
         </div>
         <div class="form-group">
             <label class="label" for="email">Email:</label>
-            <input type="email" id="email" class="input-field" value="johndoe@example.com" readonly>
+            <input type="email" name="email" id="email" class="input-field" value="<?= htmlspecialchars($_SESSION['user_email'] ?? '') ?>" readonly>
         </div>
         <div class="form-group">
             <label class="label" for="address">Address:</label>
-            <textarea id="address" class="input-field" rows="3" readonly>123 Main Street, City, Country</textarea>
+            <textarea name="address" id="address" class="input-field" rows="3" readonly><?= htmlspecialchars($_SESSION['user_address'] ?? '') ?></textarea>
+        </div>
+        <div class="form-group">
+            <label class="label" for="card_details">Card Details:</label>
+            <input type="text" name="card_details" id="card_details" class="input-field" value="<?= htmlspecialchars($_SESSION['user_card_details'] ?? '') ?>" readonly>
         </div>
 
         <!-- Button Group -->
         <div class="button-group">
             <button type="button" id="editButton" class="edit-button" onclick="toggleEditMode()">Edit</button>
             <button type="button" id="cancelButton" class="cancel-button" onclick="cancelEdit()" style="display: none;">Cancel</button>
-            <button type="button" id="saveButton" class="save-button" onclick="toggleEditMode()" style="display: none;">Save Changes</button>
+            <button type="submit" id="saveButton" class="save-button" style="display: none;">Save Changes</button>
         </div>
     </form>
 
     <!-- Notification Section -->
     <div class="notification-section">
         <div class="section-title">Notifications</div>
-        
-        <!-- Example Notifications -->
         <div class="notification">
             <p><strong>Order #12345</strong> - Shipped on Oct 1, 2024</p>
         </div>
