@@ -18,7 +18,7 @@ function displayProducts(products) {
 
         // Create anchor element for product link
         const productLink = document.createElement('a');
-        productLink.href = `productpage.html?product_id=${product.product_id}`; // Link to product page
+        productLink.href = `productpage.html?product_id=${product.product_id}`;
 
         // Create image element
         const img = document.createElement('img');
@@ -46,7 +46,41 @@ function displayProducts(products) {
     });
 }
 
-// Call function to display products when the page loads
+// Function to initialize rotating banner functionality
+function initBannerAnimation() {
+    const bannerTrack = document.querySelector('.banner-track');
+    const banners = document.querySelectorAll('.banner-track img');
+    const dots = document.querySelectorAll('.dot');
+    let currentIndex = 0;
+
+    // Function to update the banner position based on currentIndex
+    function rotateBanner() {
+        const currentBannerWidth = banners[currentIndex].width;
+        const offset = -currentIndex * currentBannerWidth;
+        bannerTrack.style.transform = `translateX(${offset}px)`;
+
+        // Update active dot
+        document.querySelector('.dot.active').classList.remove('active');
+        dots[currentIndex].classList.add('active');
+    }
+
+    // Set interval to rotate banners every 5 seconds
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % banners.length;
+        rotateBanner();
+    }, 5000);
+
+    // Event listener for dots to change banner on click
+    dots.forEach(dot => {
+        dot.addEventListener('click', function() {
+            currentIndex = parseInt(dot.getAttribute('data-index'));
+            rotateBanner();
+        });
+    });
+}
+
+// Call functions to initialize content and banner animation on page load
 document.addEventListener('DOMContentLoaded', () => {
     displayProducts(products);
+    initBannerAnimation();
 });

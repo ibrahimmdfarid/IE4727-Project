@@ -1,5 +1,5 @@
 html, body {
-    height: 100%;
+    height: auto;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -85,6 +85,50 @@ header .buttons button:disabled {
     background-color: #f1f1f1;
     border-bottom: 1px solid #ddd;
 }
+
+/* Banner container styling */
+.banner-container {
+    width: 60%;               /* Container width */
+    overflow: hidden;         /* Hide overflow */
+    margin: 0 auto;
+    height: auto;             /* Auto height based on image */
+}
+
+.banner-track {
+    display: flex;            /* Align images horizontally */
+    transition: transform 0.5s ease;
+}
+
+.banner-track img {
+    width: 100%;              /* Full width of the container */
+    height: auto;             /* Maintain aspect ratio */
+    flex-shrink: 0;
+    object-fit: contain;      /* Ensure full image without cropping */
+}
+
+/* Styling for the dots */
+.banner-dots {
+    position: absolute;
+    top: 415px; /* Position the dots at the bottom of the banner */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #bbb;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active {
+    background-color: #353b35; /* Active dot color */
+}
+
 .main-content {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
