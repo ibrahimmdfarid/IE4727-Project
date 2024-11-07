@@ -16,6 +16,20 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch categories from the database
+$sql_categories = "SELECT category_id, category_name FROM categories";
+$result_categories = $conn->query($sql_categories);
+
+// Store categories in an array
+$categories = [];
+if ($result_categories->num_rows > 0) {
+    while($row = $result_categories->fetch_assoc()) {
+        $categories[] = $row;
+    }
+} else {
+    echo "No categories found";
+}
+
 // Fetch products from the database
 $sql = "SELECT product_id, name, description, price, stock_quantity, category_id, image_url FROM products";
 $result = $conn->query($sql);
@@ -121,10 +135,11 @@ $conn->close();
 </header>
     
 <div class="categories">
-    <span class="category" data-category-id="1">Category A</span>
-    <span class="category" data-category-id="2">Category B</span>
-    <span class="category" data-category-id="3">Category C</span>
+    <?php foreach ($categories as $category): ?>
+        <span class="category" data-category-id="<?= $category['category_id'] ?>"><?= htmlspecialchars($category['category_name']) ?></span>
+    <?php endforeach; ?>
 </div>
+
 
 <div class="banner-container">
     <div class="banner-track">
@@ -162,18 +177,19 @@ $conn->close();
         const resultMessage = document.createElement('p');
         if (searchQuery) {
             const numProducts = products.length;
-            resultMessage.textContent = `${numProducts} product(s) found for "${searchQuery}".`;
+            resultMessage.innerHTML = `${numProducts} product(s) found for "${searchQuery}".<br>`;
             mainContent.appendChild(resultMessage);
         }
 
         // If no products match the search query, show the message
         if (products.length === 0) {
             const noResultsMessage = document.createElement('p');
-            noResultsMessage.textContent = "Sorry, no products were found with those keywords.";
+            noResultsMessage.innerHTML = "Sorry, no products were found with those keywords.<br>";
             mainContent.appendChild(noResultsMessage);
         } else {
             // Otherwise, display the filtered products
             products.forEach(product => {
+
                 // Create product div
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product';
@@ -213,16 +229,22 @@ $conn->close();
     function filterProducts(searchQuery, categoryId) {
         let filteredProducts = products;
 
-        if (searchQuery) {
-            filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        // If a category is selected, filter by category_id
+        if (categoryId) {
+            console.log('Category_id:', categoryId); // Check category_id
+            filteredProducts = filteredProducts.filter(product => parseInt(product.category_id) === parseInt(categoryId));
         }
 
-        if (categoryId) {
-            filteredProducts = filteredProducts.filter(product => product.category_id === parseInt(categoryId));
+        // If a search query is provided, filter by product name (or description)
+        if (searchQuery) {
+            console.log('Search:', searchQuery); // Check searchQuery
+            filteredProducts = filteredProducts.filter(product => 
+                product.name.toLowerCase().includes(searchQuery.toLowerCase()));
         }
 
         return filteredProducts;
     }
+
 
     // Function to initialize rotating banner functionality
     function initBannerAnimation() {
@@ -264,9 +286,9 @@ $conn->close();
             
             // Get the search query from the URL (if any)
             const urlParams = new URLSearchParams(window.location.search);
-            const searchQuery = urlParams.get('search');
+            const searchQuery = urlParams.get('search') || '';
 
-            // Filter products based on the category ID and search query
+            // Filter products based on the category ID (and search query if provided)
             const filteredProducts = filterProducts(searchQuery, categoryId);
 
             // Display the filtered products
