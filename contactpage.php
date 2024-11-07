@@ -200,11 +200,11 @@ if (!isset($_SESSION['user_email'])) {
     <form onsubmit="return validateForm()">
         <div class="form-group">
             <label class="label" for="subject">Subject:</label>
-            <input type="text" id="subject" class="input-field" placeholder="Enter subject" required>
+            <input type="text" name="subject" id="subject" class="input-field" placeholder="Enter subject" required>
         </div>
         <div class="form-group">
             <label class="label" for="body">Body:</label>
-            <textarea id="body" class="textarea-field" rows="5" placeholder="Describe your issue (max 1000 characters)" maxlength="1000" required></textarea>
+            <textarea name="body" id="body" class="textarea-field" rows="5" placeholder="Describe your issue (max 1000 characters)" maxlength="1000" required></textarea>
         </div>
         <button type="submit" class="submit-button">Submit</button>
     </form>
