@@ -1,4 +1,7 @@
-
+<?php
+// Start the session
+session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,15 +16,22 @@
 
 <header>
     <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products...">
-        <button class="search-button">
-            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+    <form class="search-container" method="GET" action="index.php">
+        <input type="text" class="search-bar" name="search" placeholder="Search for products...">
+        <button type="submit" class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon">
         </button>
-    </div>
+    </form>
+    
     <div class="buttons">
-        <a href="loginpage.html"><button>Login</button></a>
-        <a href="cartpage.html"><button>Cart</button></a>
+        <?php if (isset($_SESSION['user_email'])): ?>
+            <!-- Show user-specific content if logged in -->
+            <a href="profilepage.php"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
+        <?php else: ?>
+            <!-- Show login button if not logged in -->
+            <a href="loginpage.html"><button>Login</button></a>
+        <?php endif; ?>
+        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
     
