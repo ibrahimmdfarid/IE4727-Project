@@ -63,6 +63,51 @@ session_start();
             background-color: #a5d8a3;
             cursor: not-allowed;
         }
+        /* Dropdown container styling */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown button styling */
+        .dropbtn {
+            padding: 10px 15px;
+            background-color: #369836;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Dropdown content styling */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        /* Individual link styling */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-radius: 5px;
+        }
+
+        /* Hover effect on links */
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
+        }
     
         .container {
             width: 1200px;
@@ -122,22 +167,39 @@ session_start();
         }
     </style>
         <script>
-        // Function to toggle answer visibility
-        function toggleAnswer(id) {
-            const answerElement = document.getElementById(id);
-            answerElement.classList.toggle('visible');
-        }
+            // Toggle dropdown visibility
+            function toggleDropdown() {
+                document.getElementById("myDropdown").classList.toggle("show");
+            }
 
-        // Function to initialize FAQ questions with numbering
-        function initializeFAQs() {
-            const questions = document.querySelectorAll('.faq-item .question');
-            questions.forEach((question, index) => {
-                question.textContent = `${index + 1}) ${question.textContent}`;
-            });
-        }
+            // Close dropdown if clicked outside
+            window.onclick = function(event) {
+                if (!event.target.matches('.dropbtn')) {
+                    const dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (let i = 0; i < dropdowns.length; i++) {
+                        const openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+            // Function to toggle answer visibility
+            function toggleAnswer(id) {
+                const answerElement = document.getElementById(id);
+                answerElement.classList.toggle('visible');
+            }
 
-        // Initialize FAQs when the page loads
-        window.onload = initializeFAQs;
+            // Function to initialize FAQ questions with numbering
+            function initializeFAQs() {
+                const questions = document.querySelectorAll('.faq-item .question');
+                questions.forEach((question, index) => {
+                    question.textContent = `${index + 1}) ${question.textContent}`;
+                });
+            }
+
+            // Initialize FAQs when the page loads
+            window.onload = initializeFAQs;
     </script>
 </head>
 <body>
@@ -153,8 +215,14 @@ session_start();
     
     <div class="buttons">
         <?php if (isset($_SESSION['user_email'])): ?>
-            <!-- Show user-specific content if logged in -->
-            <a href="profilepage.php"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
+            <!-- Dropdown Button -->
+            <div class="dropdown">
+                <button onclick="toggleDropdown()" class="dropbtn"><?= htmlspecialchars($_SESSION['user_name']) ?></button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="profilepage.php">Profile</a>
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>

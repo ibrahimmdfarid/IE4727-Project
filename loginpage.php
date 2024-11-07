@@ -44,10 +44,18 @@ if (isset($_POST['login'])) {
             header("Location: index.php");
             exit();
         } else {
-            echo "<p style='color: red;'>Invalid password.</p>";
+            echo "<script>
+                    alert('Invalid password!');
+                    window.location.href = 'loginpage.html';
+                  </script>";
+
         }
     } else {
-        echo "<p style='color: red;'>No account found with that email.</p>";
+        echo "<script>
+                alert('No account found with that email.');
+                window.location.href = 'loginpage.html';
+              </script>";
+
     }
 
     // Close connections

@@ -207,8 +207,14 @@
     
     <div class="buttons">
         <?php if (isset($_SESSION['user_email'])): ?>
-            <!-- Show user-specific content if logged in -->
-            <a href="profilepage.php"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
+            <!-- Dropdown Button -->
+            <div class="dropdown">
+                <button onclick="toggleDropdown()" class="dropbtn"><?= htmlspecialchars($_SESSION['user_name']) ?></button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="profilepage.php">Profile</a>
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
