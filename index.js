@@ -35,7 +35,7 @@ function displayProducts(products, searchQuery) {
 
             // Create anchor element for product link
             const productLink = document.createElement('a');
-            productLink.href = `productpage.html?product_id=${product.product_id}`;
+            productLink.href = `productpage.php?product_id=${product.product_id}`;
 
             // Create image element
             const img = document.createElement('img');

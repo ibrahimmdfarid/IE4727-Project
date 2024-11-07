@@ -61,7 +61,7 @@ session_start();
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
-    <p><a href="contactpage.html">Contact Us!</a></p>
+    <p><a href="contactpage.php">Contact Us!</a></p>
 </footer>
 
 <!-- Link to the external JavaScript file -->
