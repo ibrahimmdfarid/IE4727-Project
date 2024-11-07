@@ -19,7 +19,7 @@ if (isset($_POST['login'])) {
     }
 
     // Fetch name, hashed password, email, address, and card details from the database
-    $sql = "SELECT name, password, email, address, card_details FROM Users WHERE email = ?";
+    $sql = "SELECT name, password, email, address, card_details, is_admin FROM Users WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -28,7 +28,7 @@ if (isset($_POST['login'])) {
     // Check if a matching email was found
     if ($stmt->num_rows > 0) {
         // Bind the retrieved values to variables
-        $stmt->bind_result($name, $hashed_password, $user_email, $address, $card_details);
+        $stmt->bind_result($name, $hashed_password, $user_email, $address, $card_details, $is_admin);
         $stmt->fetch();
 
         // Verify the password
@@ -40,22 +40,27 @@ if (isset($_POST['login'])) {
             $_SESSION['user_address'] = $address;    // Store the user's address
             $_SESSION['user_card_details'] = $card_details; // Store the user's card details
 
-            // Redirect to the homepage
-            header("Location: index.php");
-            exit();
+            // Check if the user is an admin
+            if ($is_admin) {
+                // Redirect to admin page if the user is an admin
+                header("Location: admin_dashboard.php");
+                exit();
+            } else {
+                // Redirect to the regular homepage for regular users
+                header("Location: index.php");
+                exit();
+            }
         } else {
             echo "<script>
                     alert('Invalid password!');
                     window.location.href = 'loginpage.html';
                   </script>";
-
         }
     } else {
         echo "<script>
                 alert('No account found with that email.');
                 window.location.href = 'loginpage.html';
               </script>";
-
     }
 
     // Close connections

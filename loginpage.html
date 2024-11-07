@@ -206,19 +206,7 @@
     </form>
     
     <div class="buttons">
-        <?php if (isset($_SESSION['user_email'])): ?>
-            <!-- Dropdown Button -->
-            <div class="dropdown">
-                <button onclick="toggleDropdown()" class="dropbtn"><?= htmlspecialchars($_SESSION['user_name']) ?></button>
-                <div id="myDropdown" class="dropdown-content">
-                    <a href="profilepage.php">Profile</a>
-                    <a href="logout.php">Logout</a>
-                </div>
-            </div>
-        <?php else: ?>
-            <!-- Show login button if not logged in -->
-            <a href="loginpage.html"><button>Login</button></a>
-        <?php endif; ?>
+        <a href="loginpage.html"><button>Login</button></a>
         <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
