@@ -155,10 +155,18 @@ if (isset($_GET['edit_product_id'])) {
         <label for="stock_quantity">Stock Quantity</label>
         <input type="number" name="stock_quantity" required>
         
-        <label for="category_id">Category ID</label>
-        <input type="number" name="category_id" required>
-        
-        <label for="image_url">Image URL</label>
+        <label for="category_id">Category</label>
+        <select name="category_id" required>
+            <?php
+            // Fetch all categories
+            $categories = $conn->query("SELECT * FROM categories");
+            while ($category = $categories->fetch_assoc()) {
+                echo "<option value='" . $category['category_id'] . "'>" . htmlspecialchars($category['category_name']) . "</option>";
+            }
+            ?>
+        </select>
+
+        <label for="image_url"><br><br>Image URL</label>
         <input type="text" name="image_url" required>
         
         <button type="submit" name="add_product">Add Product</button>
