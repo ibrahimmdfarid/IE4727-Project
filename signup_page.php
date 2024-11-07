@@ -243,7 +243,10 @@ if (isset($_POST['signup'])) {
 
     // Check if passwords match
     if ($password !== $confirm_password) {
-        echo "<p style='color: red;'>Passwords do not match.</p>";
+        echo "<script>
+                    alert('Passwords do not match.');
+                    window.location.href = 'signup_page.php';
+                  </script>";
         exit();
     }
 
@@ -275,7 +278,10 @@ if (isset($_POST['signup'])) {
         $stmt->bind_param("ss", $email, $hashed_password);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Sign up successful!');</script>";
+            echo "<script>
+                    alert('Sign up successful!');
+                    window.location.href = 'profilepage.php';
+                    </script>";
         } else {
             echo "<script>alert('Error: " . $stmt->error . "');</script>";
         }

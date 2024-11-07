@@ -155,21 +155,23 @@
             cursor: pointer;
             font-size: 16px;
         }
-        .sign-up {
+        /* Styling for the sign-up button */
+        .sign-up-container {
+            text-align: center;
             margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
         }
         .sign-up-button {
-            width: 100%;
-            padding: 10px;
+            padding: 10px 15px;
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            text-decoration: none; /* Make it look like a button */
+        }
+        .sign-up-button:hover {
+            background-color: #218838; /* Darker green on hover */
         }
 
         footer {
@@ -224,8 +226,14 @@
         <div class="forgot-password"><a href="#">Forgot your password?</a></div>
 
         <button type="submit" name="login" class="sign-in-button">Sign In</button>
+
     </div>
 </form>
+
+<div class="sign-up-container">
+    <p>Don't have an account? <a href="signup_page.php" class="sign-up-button">Sign up here!</a></p>
+</div>
+
 
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
