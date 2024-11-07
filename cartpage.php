@@ -1,6 +1,62 @@
 <?php
 // Start the session
 session_start();
+
+if (!isset($_SESSION['user_email'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$conn = new mysqli('localhost', 'root', '', 'project');
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Retrieve user_id based on the session email
+$user_email = $_SESSION['user_email'];
+$sql = "SELECT user_id FROM Users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $user_email);
+$stmt->execute();
+$stmt->bind_result($user_id);
+$stmt->fetch();
+$stmt->close();
+
+// Update quantity if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $product_id = $_POST['product_id'];
+
+    // Check if this request is for updating quantity or removing the product
+    if (isset($_POST['quantity'])) {
+        $new_quantity = $_POST['quantity'];
+        // Ensure quantity is at least 1
+        $new_quantity = max(1, (int)$new_quantity);
+
+        $sql = "UPDATE Cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iii", $new_quantity, $user_id, $product_id);
+        $stmt->execute();
+        $stmt->close();
+    } elseif (isset($_POST['remove'])) {
+        // Remove the product from the cart
+        $sql = "DELETE FROM Cart WHERE user_id = ? AND product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $user_id, $product_id);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+// Get cart items for the user
+$sql = "SELECT Cart.product_id, Cart.quantity, Products.name, Products.price 
+        FROM Cart JOIN Products ON Cart.product_id = Products.product_id 
+        WHERE Cart.user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$total_price = 0;
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +93,8 @@ session_start();
     
 <div class="container">
     <h1>Your Shopping Cart</h1>
-    <table>
+    <?php if ($result->num_rows > 0): ?>
+        <table>
         <thead>
             <tr>
                 <th>Image</th>
@@ -49,94 +106,61 @@ session_start();
             </tr>
         </thead>
         <tbody id="cart-items">
-            <!-- Cart items will be dynamically injected here -->
-        </tbody>
-    </table>
+            <?php while ($row = $result->fetch_assoc()): 
+                $subtotal = $row['price'] * $row['quantity'];
+                $total_price += $subtotal;
+            ?>
+            <tr>
+                <td>INSERT IMAGE</td>
+                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                <td>
+                    <!-- Form to update quantity -->
+                    <form method="POST" action="cartpage.php" style="display: inline;">
+                        <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
+                        <button type="submit" name="quantity" value="<?php echo $row['quantity'] - 1; ?>">-</button>
+                        <?php echo htmlspecialchars($row['quantity']); ?>
+                        <button type="submit" name="quantity" value="<?php echo $row['quantity'] + 1; ?>">+</button>
+                    </form>
+                </td>
+                <td>$<?php echo number_format($row['price'], 2); ?></td>
+                <td>$<?php echo number_format($subtotal, 2); ?></td>
+                <td>
+                    <!-- Form to remove product -->
+                    <form method="POST" action="cartpage.php" style="display: inline;">
+                        <input type="hidden" name="product_id" value="<?php echo $row['product_id']; ?>">
+                        <button type="submit" name="remove" value="1">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+            </tbody>
+        </table>
+        
+        <div class="summary">
+            <h3>Cart Summary</h3>
+            <p id="total-price">Total Price: $<?php echo number_format($total_price, 2); ?></p>
+            <p id="shipping-fee">Shipping Fee: $0.00</p>
+            <p id="grand-total">Grand Total: $0.00</p>
+            <?php $_SESSION['total_price'] = $total_price; ?>
+            <form method="POST" action="checkoutpage.php">
+                <button class="checkout-btn" id="checkout-btn" type="submit">Proceed to Checkout</button>
+            </form>
+        </div>
+    <?php else: ?>
+        <p>Your cart is empty.</p>
+    <?php endif; ?>
 
-    <div class="summary">
-        <h3>Cart Summary</h3>
-        <p id="total-price">Total Price: $0.00</p>
-        <p id="shipping-fee">Shipping Fee: $0.00</p>
-        <p id="grand-total">Grand Total: $0.00</p>
-        <button class="checkout-btn" id="checkout-btn" onclick="window.location.href='checkoutpage.html'">Proceed to Checkout</button>
-    </div>
-    
+    <?php
+    $stmt->close();
+    $conn->close();
+    ?>
 </div>
-
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
     <p><a href="contactpage.html">Contact Us!</a></p>
 </footer>
 
-<script>
-    // Simulated database response (to be replaced with actual backend call)
-    const products = [
-        { product_id: 1, name: "Product Name 1", price: 100.00, image_url: "images/product1.jpg" },
-        { product_id: 2, name: "Product Name 2", price: 200.00, image_url: "images/product2.jpg" },
-        { product_id: 3, name: "Product Name 3", price: 150.00, image_url: "images/product3.jpg" },
-        { product_id: 4, name: "Product Name 4", price: 120.00, image_url: "images/product4.jpg" },
-        { product_id: 5, name: "Product Name 5", price: 180.00, image_url: "images/product5.jpg" },
-        { product_id: 6, name: "Product Name 6", price: 220.00, image_url: "images/product6.jpg" },
-    ];
-
-    // Sample cart items (to be replaced with actual data from the database)
-    const cartItems = [
-        { cart_item_id: 1, user_id: 1, product_id: 1, quantity: 2 },
-        { cart_item_id: 2, user_id: 1, product_id: 2, quantity: 1 },
-        { cart_item_id: 3, user_id: 1, product_id: 3, quantity: 3 },
-        { cart_item_id: 4, user_id: 1, product_id: 4, quantity: 1 },
-    ];
-
-    function loadCart() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        cartItemsContainer.innerHTML = ''; // Clear existing rows
-        let totalPrice = 0;
-
-        cartItems.forEach(item => {
-            const product = products.find(p => p.product_id === item.product_id);
-            const totalItemPrice = product.price * item.quantity;
-            totalPrice += totalItemPrice;
-
-            // Append cart item to the table
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><img src="${product.image_url}" alt="${product.name}" class="product-image"></td>
-                <td>${product.name}</td>
-                <td>
-                    <input type="number" value="${item.quantity}" min="1" style="width: 60px;">
-                </td>
-                <td>$${product.price.toFixed(2)}</td>
-                <td>$${totalItemPrice.toFixed(2)}</td>
-                <td><button onclick="removeItem(${item.cart_item_id})">Remove</button></td>
-            `;
-            cartItemsContainer.appendChild(row);
-        });
-
-        // Update summary
-        updateCartSummary(totalPrice);
-    }
-
-
-    function updateCartSummary(totalPrice) {
-        let shippingFee = totalPrice < 50 ? 4.99 : 0.00;
-        const grandTotal = totalPrice + shippingFee;
-
-        document.getElementById('total-price').textContent = `Total Price: $${totalPrice.toFixed(2)}`;
-        document.getElementById('shipping-fee').textContent = `Shipping Fee: $${shippingFee.toFixed(2)}`;
-        document.getElementById('grand-total').textContent = `Grand Total: $${grandTotal.toFixed(2)}`;
-    }
-
-    function removeItem(cart_item_id) {
-        // Logic to remove the item from the cart
-        console.log(`Remove item with ID: ${cart_item_id}`);
-        // Reload the cart after removal
-        loadCart();
-    }
-
-    // Initial load of the cart
-    loadCart();
-</script>
 
 </body>
 </html>

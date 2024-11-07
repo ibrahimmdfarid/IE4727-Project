@@ -4,30 +4,33 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
-// Simulated database response (to be replaced with actual backend call)
-const products = [
-    { product_id: 1, name: "Product Name 1", price: 100, image_url: "product1.jpg", description: "This is the description for product 1.", stock_quantity: 50 },
-    { product_id: 2, name: "Product Name 2", price: 200, image_url: "product2.jpg", description: "This is the description for product 2.", stock_quantity: 20 },
-    { product_id: 3, name: "Product Name 3", price: 150, image_url: "product3.jpg", description: "This is the description for product 3.", stock_quantity: 0 },
-    { product_id: 4, name: "Product Name 4", price: 120, image_url: "product4.jpg", description: "This is the description for product 4.", stock_quantity: 30 },
-    { product_id: 5, name: "Product Name 5", price: 180, image_url: "product5.jpg", description: "This is the description for product 5.", stock_quantity: 10 },
-    { product_id: 6, name: "Product Name 6", price: 220, image_url: "product6.jpg", description: "This is the description for product 6.", stock_quantity: 15 },
-];
-
 // Function to display product details
-function displayProduct() {
+async function displayProduct() {
     const productId = getQueryParam('product_id');
-    const product = products.find(p => p.product_id == productId);
+    
+    // Fetch product data from the server
+    try {
+        const response = await fetch(`getProduct.php?product_id=${productId}`);
+        if (!response.ok) {
+            throw new Error("Product not found.");
+        }
+        
+        const product = await response.json();
 
-    if (product) {
-        document.getElementById('product-image').src = product.image_url;
-        document.getElementById('product-name').textContent = product.name;
-        document.getElementById('product-price').textContent = `Price: $${product.price}`;
-        document.getElementById('product-stock').textContent = `In Stock: ${product.stock_quantity}`;
-        document.getElementById('product-description').textContent = product.description;
-    } else {
-        // Handle case where product is not found
-        document.querySelector('.container').innerHTML = '<p>Product not found.</p>';
+        // Check if the product is available
+        if (product && product.product_id) {
+            document.getElementById('product-image').src = product.image_url;
+            document.getElementById('product-name').textContent = product.name;
+            document.getElementById('product-price').textContent = `Price: $${product.price}`;
+            document.getElementById('product-stock').textContent = `In Stock: ${product.stock_quantity}`;
+            document.getElementById('product-description').textContent = product.description;
+        } else {
+            // Handle case where product is not found
+            document.querySelector('.container').innerHTML = '<p>Product not found.</p>';
+        }
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        document.querySelector('.container').innerHTML = `<p>${error.message}</p>`;
     }
 }
 
