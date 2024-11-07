@@ -4,6 +4,42 @@ if (!isset($_SESSION['user_email'])) {
     header("Location: login.php");
     exit();
 }
+
+// Only process the form submission if there's a POST request
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Database connection
+    $conn = new mysqli('localhost', 'root', '', 'project');
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Retrieve user_id based on the session email
+    $user_email = $_SESSION['user_email'];
+    $sql = "SELECT user_id FROM Users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $user_email);
+    $stmt->execute();
+    $stmt->bind_result($user_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Capture and format form inputs
+    $subject = $_POST['subject'];
+    $body = $_POST['body'];
+    $enquiry = "Subject: " . $subject . "\nBody: " . $body;
+
+    // Insert enquiry into the contact_enquiries table
+    $sql = "INSERT INTO contact_enquiries (user_id, enquiry) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $user_id, $enquiry);
+    $stmt->execute();
+    $stmt->close();
+    $conn->close();
+
+    // Display a success message and redirect
+    echo "<script>alert('Your enquiry has been submitted successfully!');</script>";
+    echo "<script>window.location.href = 'contactpage.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -197,17 +233,17 @@ if (!isset($_SESSION['user_email'])) {
     <!-- Contact Form Section -->
     <div class="section-title">Contact Us</div>
     
-    <form onsubmit="return validateForm()">
-        <div class="form-group">
-            <label class="label" for="subject">Subject:</label>
-            <input type="text" name="subject" id="subject" class="input-field" placeholder="Enter subject" required>
-        </div>
-        <div class="form-group">
-            <label class="label" for="body">Body:</label>
-            <textarea name="body" id="body" class="textarea-field" rows="5" placeholder="Describe your issue (max 1000 characters)" maxlength="1000" required></textarea>
-        </div>
-        <button type="submit" class="submit-button">Submit</button>
-    </form>
+<form onsubmit="return validateForm()" method="POST" action="contactpage.php">
+    <div class="form-group">
+        <label class="label" for="subject">Subject:</label>
+        <input type="text" name="subject" id="subject" class="input-field" placeholder="Enter subject" required>
+    </div>
+    <div class="form-group">
+        <label class="label" for="body">Body:</label>
+        <textarea name="body" id="body" class="textarea-field" rows="5" placeholder="Describe your issue (max 1000 characters)" maxlength="1000" required></textarea>
+    </div>
+    <button type="submit" class="submit-button">Submit</button>
+</form>
 </div>
 
 <footer>
