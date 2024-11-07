@@ -110,11 +110,12 @@ header .buttons button:disabled {
     transition: transform 0.5s ease;
 }
 
+/* Banner images styling */
 .banner-track img {
     width: 100%;              /* Full width of the container */
-    height: auto;             /* Maintain aspect ratio */
+    height: auto;             /* Auto height to maintain aspect ratio */
+    object-fit: contain;      /* Ensures the full image fits without cropping */
     flex-shrink: 0;
-    object-fit: contain;      /* Ensure full image without cropping */
     border-radius: 3px;      /* Slightly rounded edges */
 }
 
@@ -147,18 +148,34 @@ header .buttons button:disabled {
     gap: 20px;
     padding: 20px;
 }
+
 .product {
     text-align: center;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 5px;
     background-color: #fff;
+    width: 200px; /* Add explicit width */
+    height: 200px; /* Add explicit height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible; /* Allow overflow to be visible */
+    overflow-x: visible;  /* Explicitly allow horizontal overflow */
+    overflow-y: visible;  /* Explicitly allow vertical overflow */
+
+
 }
+
+/* Styling for product images */
 .product img {
-    width: 100%;
-    height: auto;
-    max-height: 150px;
-    object-fit: cover;
+    width: 150px;
+    height: 150px;
+    object-fit: contain; /* Ensure image scales correctly */
+    margin: 0 auto;
+    display: block;
+    overflow-clip-margin: unset; /* Remove any clipping margin */
+
 }
 .container {
     width: 1200px; /* Keeping original width */
