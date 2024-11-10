@@ -40,14 +40,27 @@ if (isset($_POST['login'])) {
             $_SESSION['user_address'] = $address;    // Store the user's address
             $_SESSION['user_card_details'] = $card_details; // Store the user's card details
 
-            // Redirect to the homepage
-            header("Location: index.php");
-            exit();
+            // Check if the user is an admin
+            if ($name == "admin") {
+                // Redirect to admin page if the user is an admin
+                header("Location: adminpage.php");
+                exit();
+            } else {
+                // Redirect to the regular homepage for regular users
+                header("Location: index.php");
+                exit();
+            }
         } else {
-            echo "<p style='color: red;'>Invalid password.</p>";
+            echo "<script>
+                    alert('Invalid password!');
+                    window.location.href = 'loginpage.html';
+                  </script>";
         }
     } else {
-        echo "<p style='color: red;'>No account found with that email.</p>";
+        echo "<script>
+                alert('No account found with that email.');
+                window.location.href = 'loginpage.html';
+              </script>";
     }
 
     // Close connections

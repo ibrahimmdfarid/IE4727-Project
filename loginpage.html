@@ -155,21 +155,23 @@
             cursor: pointer;
             font-size: 16px;
         }
-        .sign-up {
+        /* Styling for the sign-up button */
+        .sign-up-container {
+            text-align: center;
             margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
         }
         .sign-up-button {
-            width: 100%;
-            padding: 10px;
+            padding: 10px 15px;
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            text-decoration: none; /* Make it look like a button */
+        }
+        .sign-up-button:hover {
+            background-color: #218838; /* Darker green on hover */
         }
 
         footer {
@@ -198,15 +200,16 @@
 
 <header>
     <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products...">
-        <button class="search-button">
-            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+    <form class="search-container" method="GET" action="index.php">
+        <input type="text" class="search-bar" name="search" placeholder="Search for products...">
+        <button type="submit" class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon">
         </button>
-    </div>
+    </form>
+    
     <div class="buttons">
         <a href="loginpage.html"><button>Login</button></a>
-        <a href="cartpage.html"><button>Cart</button></a>
+        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
     
@@ -223,13 +226,19 @@
         <div class="forgot-password"><a href="#">Forgot your password?</a></div>
 
         <button type="submit" name="login" class="sign-in-button">Sign In</button>
+
     </div>
 </form>
+
+<div class="sign-up-container">
+    <p>Don't have an account? <a href="signup_page.php" class="sign-up-button">Sign up here!</a></p>
+</div>
+
 
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
-    <p><a href="contactpage.html">Contact Us!</a></p>
+    <p><a href="contactpage.php">Contact Us!</a></p>
 </footer>
 
 <!-- <script src="loginpage.js"></script> -->

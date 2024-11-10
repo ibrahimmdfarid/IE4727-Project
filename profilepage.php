@@ -61,7 +61,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Information</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="profilepage.js" defer></script>
+    
     <style>
         body {
             margin: 0;
@@ -114,6 +114,51 @@ $conn->close();
     
         header .buttons a {
             text-decoration: none; /* Remove underline from links */
+        }
+        /* Dropdown container styling */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown button styling */
+        .dropbtn {
+            padding: 10px 15px;
+            background-color: #369836;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Dropdown content styling */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        /* Individual link styling */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-radius: 5px;
+        }
+
+        /* Hover effect on links */
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
         }
     
         .container {
@@ -227,15 +272,21 @@ $conn->close();
     
     <div class="buttons">
         <?php if (isset($_SESSION['user_email'])): ?>
-            <!-- Show user-specific content if logged in -->
-            <a href="profilepage.php"><button><?= htmlspecialchars($_SESSION['user_name']) ?></button></a>
+            <!-- Dropdown Button -->
+            <div class="dropdown">
+                <button onclick="toggleDropdown()" class="dropbtn"><?= htmlspecialchars($_SESSION['user_name']) ?></button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="profilepage.php">Profile</a>
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
         <?php endif; ?>
-        <a href="cartpage.html"><button>Cart</button></a>
+        <a href="cartpage.php"><button>Cart</button></a>
     </div>
-</header>    
+</header>
 
 <div class="container">
     <!-- Profile Information Section -->
@@ -283,8 +334,149 @@ $conn->close();
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
-    <p><a href="contactpage.html">Contact Us!</a></p>
+    <p><a href="contactpage.php">Contact Us!</a></p>
 </footer>
+<script>
+        // Toggle dropdown visibility
+        function toggleDropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
 
+        // Close dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        let isEditMode = false;  // Flag to track whether in edit mode or not
+        let initName = '';
+        let initAddress = '';
+        let initCardDetails = '';
+
+        // Set maximum length for Name
+        const MAX_NAME_LENGTH = 50;
+
+        // Function to validate Name
+        function validateName(name) {
+            const namePattern = /^[A-Za-z\s]+$/; // Only letters and spaces allowed
+            if (!name.match(namePattern)) {
+                return 'Name must contain only letters and spaces.';
+            }
+            if (name.length > MAX_NAME_LENGTH) {
+                return `Name cannot be longer than ${MAX_NAME_LENGTH} characters.`;
+            }
+            return true;
+        }
+
+        // Function to validate Card Details
+        function validateCardDetails(cardDetails) {
+            const cardPattern = /^\d{16}$/;  // Only digits and exactly 16 digits
+            if (!cardDetails.match(cardPattern)) {
+                return 'Card details must be exactly 16 digits.';
+            }
+            return true;
+        }
+
+        // Function to validate Address
+        function validateAddress(address) {
+            if (!address.trim()) {
+                return 'Address cannot be empty.';
+            }
+            return true;
+        }
+
+        // Function to toggle edit mode
+        function toggleEditMode() {
+            initName = document.getElementById('name').value;
+            initAddress = document.getElementById('address').value;
+            initCardDetails = document.getElementById('card_details').value;
+            
+            const inputs = document.querySelectorAll('.input-field');
+            const editButton = document.getElementById('editButton');
+            const cancelButton = document.getElementById('cancelButton');
+            const saveButton = document.getElementById('saveButton');
+            
+            const emailInput = document.getElementById('email');
+            emailInput.setAttribute('readonly', true);  // Ensure email remains readonly
+
+            if (isEditMode) {  // If currently in edit mode
+                inputs.forEach(input => input.setAttribute('readonly', true));
+                editButton.style.display = 'inline-block';
+                cancelButton.style.display = 'none';
+                saveButton.style.display = 'none';
+            } else {  // If currently not in edit mode
+                inputs.forEach(input => {
+                    if (input !== emailInput) {  // Allow all fields except email to be editable
+                        input.removeAttribute('readonly');
+                    }
+                });
+                editButton.style.display = 'none';
+                cancelButton.style.display = 'inline-block';
+                saveButton.style.display = 'inline-block';
+            }
+
+            // Toggle the flag
+            isEditMode = !isEditMode;
+        }
+
+        // Function to cancel editing and revert to original values
+        function cancelEdit() {
+            // Revert back to original values if cancel is clicked
+            document.getElementById('name').value = initName;
+            document.getElementById('address').value = initAddress;
+            document.getElementById('card_details').value = initCardDetails;
+            toggleEditMode();  // Close edit mode
+        }
+
+        // Function to handle form submission
+        function validateForm(event) {
+            // Get values from the form
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const cardDetails = document.getElementById('card_details').value;
+
+            // Validate each field
+            let isValid = true;
+            let errorMessage = '';
+
+            // Validate Name
+            const nameValidation = validateName(name);
+            if (nameValidation !== true) {
+                isValid = false;
+                errorMessage += nameValidation + '\n';
+            }
+
+            // Validate Address
+            const addressValidation = validateAddress(address);
+            if (addressValidation !== true) {
+                isValid = false;
+                errorMessage += addressValidation + '\n';
+            }
+
+            // Validate Card Details
+            const cardValidation = validateCardDetails(cardDetails);
+            if (cardValidation !== true) {
+                isValid = false;
+                errorMessage += cardValidation + '\n';
+            }
+
+            // If any validation fails, show alert and prevent form submission
+            if (!isValid) {
+                alert(errorMessage);
+                event.preventDefault();  // Prevent form submission
+            }
+        }
+
+        // Attach form validation to the form submit event
+        document.querySelector('form').addEventListener('submit', validateForm);
+
+    </script>
 </body>
 </html>

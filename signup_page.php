@@ -1,3 +1,72 @@
+<?php
+if (isset($_POST['signup'])) {
+    // Get form data
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Check if passwords match
+    if ($password !== $confirm_password) {
+        echo "<script>
+                    alert('Passwords do not match.');
+                    window.location.href = 'signup_page.php';
+                  </script>";
+        exit();
+    }
+
+    // Hash the password for secure storage
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    // Create database connection
+    $conn = new mysqli('localhost', 'root', '', 'project');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Check if the email already exists
+    $sql = "SELECT * FROM Users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Email already exists
+        echo "<script>alert('This email is already registered. Please use a different email');</script>";
+    } else {
+        // Insert data into Users table
+        $sql = "INSERT INTO Users (email, password) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $email, $hashed_password);
+
+        if ($stmt->execute()) {
+            // Start session after successful sign-up
+            session_start();
+            
+            // Store user details in session
+            $_SESSION['user_email'] = $email;
+            $_SESSION['user_name'] = '';  // Store email temporarily as name, you can modify later to fetch actual name
+            $_SESSION['user_address'] = '';  // Set default empty address or fetch later
+            $_SESSION['user_card_details'] = '';  // Set default empty card details or fetch later
+
+            // Redirect to profile page
+            echo "<script>
+                    alert('Sign up successful! Please update your Name and Address.');
+                    window.location.href = 'profilepage.php';
+                  </script>";
+        } else {
+            echo "<script>alert('Error: " . $stmt->error . "');</script>";
+        }
+    }
+
+    // Close connections
+    $stmt->close();
+    $conn->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,18 +250,31 @@
 
 <header>
     <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products...">
-        <button class="search-button">
-            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon"> <!-- Use the correct path for the image -->
+    <form class="search-container" method="GET" action="index.php">
+        <input type="text" class="search-bar" name="search" placeholder="Search for products...">
+        <button type="submit" class="search-button">
+            <img src="images/magnifying_glass_icon.png" alt="Search" class="search-icon">
         </button>
-    </div>
+    </form>
+    
     <div class="buttons">
-        <a href="loginpage.html"><button>Login</button></a>
-        <a href="cartpage.html"><button>Cart</button></a>
+        <?php if (isset($_SESSION['user_email'])): ?>
+            <!-- Dropdown Button -->
+            <div class="dropdown">
+                <button onclick="toggleDropdown()" class="dropbtn"><?= htmlspecialchars($_SESSION['user_name']) ?></button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="profilepage.php">Profile</a>
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
+        <?php else: ?>
+            <!-- Show login button if not logged in -->
+            <a href="loginpage.html"><button>Login</button></a>
+        <?php endif; ?>
+        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
-    
+
 <div class="container">
     <div class="centered-text">Sign Up</div>
     <form method="POST" action="">
@@ -218,60 +300,8 @@
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
-    <p><a href="contactpage.html">Contact Us!</a></p>
+    <p><a href="contactpage.php">Contact Us!</a></p>
 </footer>
-
-<?php
-if (isset($_POST['signup'])) {
-    // Get form data
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
-
-    // Check if passwords match
-    if ($password !== $confirm_password) {
-        echo "<p style='color: red;'>Passwords do not match.</p>";
-        exit();
-    }
-
-    // Hash the password for secure storage
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
-    // Create database connection
-    $conn = new mysqli('localhost', 'root', '', 'project');
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Check if the email already exists
-    $sql = "SELECT * FROM Users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // Email already exists
-        echo "<script>alert('This email is already registered. Please use a different email');</script>";
-    } else {
-        // Insert data into Users table
-        $sql = "INSERT INTO Users (email, password) VALUES (?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $email, $hashed_password);
-
-        if ($stmt->execute()) {
-            echo "<script>alert('Sign up successful!');</script>";
-        } else {
-            echo "<script>alert('Error: " . $stmt->error . "');</script>";
-        }
-    }
-    // Close connections
-    $stmt->close();
-    $conn->close();
-}
-?>
 
 </body>
 </html>
