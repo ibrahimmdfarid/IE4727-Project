@@ -29,89 +29,66 @@ if ($user_name !== 'admin') {
     exit();
 }
 
-// Handle product addition
-if (isset($_POST['add_product'])) {
-    $product_name = $_POST['product_name'];
-    $description = $_POST['description'];
-    $price = $_POST['price'];
-    $stock_quantity = $_POST['stock_quantity'];
-    $category_id = $_POST['category_id'];
-    $image_url = $_POST['image_url'];
-
-    // Insert the product into the database
-    $sql = "INSERT INTO products (name, description, price, stock_quantity, category_id, image_url) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdiis", $product_name, $description, $price, $stock_quantity, $category_id, $image_url);
-    $stmt->execute();
-    $stmt->close();
-
-    echo "<script>
-            alert('Product added successfully!');
-            window.location.href = 'adminpage.php'
-            </script>";
-}
-
-// Handle product deletion
-if (isset($_GET['delete_product_id'])) {
-    $product_id = $_GET['delete_product_id'];
-
-    // Delete the product from the database
-    $sql = "DELETE FROM products WHERE product_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-    $stmt->close();
-
-    echo "<script>
-            alert('Product deleted successfully!');
-            window.location.href = 'adminpage.php'
-            </script>";
-}
-
-// Handle product update
-if (isset($_POST['update_product'])) {
-    $product_id = $_POST['product_id'];
-    $product_name = $_POST['product_name'];
-    $description = $_POST['description'];
-    $price = $_POST['price'];
-    $stock_quantity = $_POST['stock_quantity'];
-    $category_id = $_POST['category_id'];
-    $image_url = $_POST['image_url'];
-
-    // Update the product details
-    $sql = "UPDATE products SET name = ?, description = ?, price = ?, stock_quantity = ?, category_id = ?, image_url = ? WHERE product_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdiisi", $product_name, $description, $price, $stock_quantity, $category_id, $image_url, $product_id);
-    $stmt->execute();
-    $stmt->close();
-
-    echo "<script>alert('Product updated successfully!');
-            window.location.href = 'adminpage.php'
-            </script>";
-}
-
-// Retrieve all products to display on the page
-$sql = "SELECT * FROM products";
-$result = $conn->query($sql);
-
-// Fetch the product to edit if an edit button is clicked
-$product_to_edit = null;
-if (isset($_GET['edit_product_id'])) {
-    $product_id = $_GET['edit_product_id'];
-    $sql = "SELECT * FROM products WHERE product_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $product_to_edit = $result->fetch_assoc();
-    $stmt->close();
-}
-
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    /* Dropdown container styling */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Dropdown button styling */
+    .dropbtn {
+        padding: 10px 15px;
+        background-color: #369836;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    /* Dropdown content styling */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        border-radius: 5px;
+    }
+
+    /* Individual link styling */
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        border-radius: 5px;
+    }
+
+    /* Hover effect on links */
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .show {
+        display: block;
+    }
+</style>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -131,120 +108,47 @@ if (isset($_GET['edit_product_id'])) {
     </form>
     
     <div class="buttons">
-        <a href="profilepage.php"><button>Profile</button></a>
+        <?php if (isset($_SESSION['user_email'])): ?>
+            <!-- Dropdown Button -->
+            <div class="dropdown">
+                <button onclick="toggleDropdown()" class="dropbtn"><?= htmlspecialchars($_SESSION['user_name']) ?></button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="profilepage.php">Profile</a>
+                    <a href="logout.php">Logout</a>
+                </div>
+            </div>
+
+        <?php else: ?>
+            <!-- Show login button if not logged in -->
+            <a href="loginpage.html"><button>Login</button></a>
+        <?php endif; ?>
         <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
 
-<div class="admin-container">
-    <h1>Admin - Manage Products</h1>
+<div class="container">
+    <h1>Welcome, Admin!</h1>
+    <p>Select an option below:</p>
+    
+    <!-- Sales Report Button -->
+    <a href="sales_report.php">
+        <button class="btn">Sales Report</button>
+    </a>
+    
+    <!-- Manage Products Button -->
+    <a href="manage_products.php">
+        <button class="btn">Manage Products</button>
+    </a>
 
-    <!-- Form to add new product -->
-    <h2>Add New Product</h2>
-    <form method="POST" action="">
-        <label for="product_name">Product Name</label>
-        <input type="text" name="product_name" required>
-        
-        <label for="description">Description<br></label>
-        <textarea name="description" rows="5" cols="50" required></textarea>
+    <!-- Manage Products Button -->
+    <a href="view_orders.php">
+        <button class="btn">View Orders</button>
+    </a>
 
-        
-        <label for="price"><br><br>Price</label>
-        <input type="number" name="price" step="0.01" required>
-        
-        <label for="stock_quantity">Stock Quantity</label>
-        <input type="number" name="stock_quantity" required>
-        
-        <label for="category_id">Category</label>
-        <select name="category_id" required>
-            <?php
-            // Fetch all categories
-            $categories = $conn->query("SELECT * FROM categories");
-            while ($category = $categories->fetch_assoc()) {
-                echo "<option value='" . $category['category_id'] . "'>" . htmlspecialchars($category['category_name']) . "</option>";
-            }
-            ?>
-        </select>
-
-        <label for="image_url"><br><br>Image URL</label>
-        <input type="text" name="image_url" required>
-        
-        <button type="submit" name="add_product">Add Product</button>
-    </form>
-
-    <!-- Form to edit an existing product -->
-    <?php if ($product_to_edit): ?>
-        <h2>Edit Product</h2>
-        <form method="POST" action="">
-            <input type="hidden" name="product_id" value="<?= $product_to_edit['product_id'] ?>">
-
-            <label for="product_name">Product Name</label>
-            <input type="text" name="product_name" value="<?= htmlspecialchars($product_to_edit['name']) ?>" required>
-
-            <label for="description">Description<br></label>
-            <textarea name="description" rows="5" cols="50" required><?= htmlspecialchars($product_to_edit['description']) ?></textarea>
-
-            <label for="price"><br><br>Price</label>
-            <input type="number" name="price" value="<?= htmlspecialchars($product_to_edit['price']) ?>" step="0.01" required>
-
-            <label for="stock_quantity">Stock Quantity</label>
-            <input type="number" name="stock_quantity" value="<?= htmlspecialchars($product_to_edit['stock_quantity']) ?>" required>
-
-            <label for="category_id">Category</label>
-            <select name="category_id" required>
-                <?php
-                // Fetch all categories
-                $categories = $conn->query("SELECT * FROM categories");
-                while ($category = $categories->fetch_assoc()) {
-                    echo "<option value='" . $category['category_id'] . "'>" . htmlspecialchars($category['category_name']) . "</option>";
-                }
-                ?>
-            </select>
-
-            <label for="image_url"><br><br>Image URL</label>
-            <input type="text" name="image_url" value="<?= htmlspecialchars($product_to_edit['image_url']) ?>" required>
-
-            <button type="submit" name="update_product">Update Product</button>
-        </form>
-    <?php endif; ?>
-
-    <!-- Display existing products -->
-    <h2>Existing Products</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Stock Quantity</th>
-                <th>Category ID</th>
-                <th>Image URL</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($row = $result->fetch_assoc()): ?>
-            <tr>
-                <td><?= htmlspecialchars($row['name']) ?></td>
-                <td><?= htmlspecialchars($row['description']) ?></td>
-                <td><?= htmlspecialchars($row['price']) ?></td>
-                <td><?= htmlspecialchars($row['stock_quantity']) ?></td>
-                <td><?= htmlspecialchars($row['category_id']) ?></td>
-                <td><img src="<?= htmlspecialchars($row['image_url']) ?>" alt="<?= htmlspecialchars($row['name']) ?>" width="50" height="50"></td>
-                <td>
-                    <!-- Edit Product Button -->
-                    <a href="?edit_product_id=<?= $row['product_id'] ?>">
-                        <button>Edit</button>
-                    </a>
-                    <!-- Delete Product Button -->
-                    <a href="?delete_product_id=<?= $row['product_id'] ?>" onclick="return confirm('Are you sure you want to delete this product?')">
-                        <button>Delete</button>
-                    </a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+    <!-- Add other admin functionalities here -->
+    <!-- Example for future additions -->
+    <!-- <a href="manage_users.php"><button>Manage Users</button></a> -->
+    <!-- <a href="view_orders.php"><button>View Orders</button></a> -->
 </div>
 
 <footer>
@@ -253,9 +157,27 @@ if (isset($_GET['edit_product_id'])) {
     <p><a href="contactpage.php">Contact Us!</a></p>
 </footer>
 
+<script>
+    // Toggle dropdown visibility
+    function toggleDropdown() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    // Close dropdown if clicked outside
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    };
+
+</script>
+
+
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
