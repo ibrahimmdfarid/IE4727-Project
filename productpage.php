@@ -224,11 +224,12 @@ session_start();
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
+            <a href="cartpage.php"><button>Cart</button></a>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
+            <a href="signup_page.php"><button>Sign Up</button></a>
         <?php endif; ?>
-        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
     

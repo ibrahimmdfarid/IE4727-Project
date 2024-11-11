@@ -173,7 +173,6 @@ $orders = [
             const confirmation = confirm(`Are you sure you want to change the status to "${newStatus}"?`);
             if (confirmation) {
                 // Call backend code to update the status in the database
-                // Example: Use AJAX or form submission to save the new status
                 console.log(`Status of order ${orderId} updated to ${newStatus}`);
                 // After updating the status, close the modal
                 closeModal();
@@ -202,12 +201,12 @@ $orders = [
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
-
+            <a href="cartpage.php"><button>Cart</button></a>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
+            <a href="signup_page.php"><button>Sign Up</button></a>
         <?php endif; ?>
-        <a href="cartpage.php"><button>Cart</button></a>
     </div>
 </header>
 
