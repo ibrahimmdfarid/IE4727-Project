@@ -164,7 +164,7 @@ if (isset($_GET['edit_product_id'])) {
     <h1>Admin - Manage Products</h1>
 
     <!-- Button to show the Add Product form -->
-    <button id="addProductButton" onclick="toggleAddProductForm()">Add Product</button>
+    <button id="addProductButton" class="red-button" onclick="toggleAddProductForm()">Add Product</button>
 
     <!-- Add New Product Form (Initially Hidden) -->
     <div id="addProductForm" style="display:none;">
@@ -197,7 +197,7 @@ if (isset($_GET['edit_product_id'])) {
             <input type="text" name="image_url" required>
             
             <!-- Cancel and Confirm buttons -->
-            <button type="button" onclick="cancelAddProduct()">Cancel</button>
+            <button type="button" onclick="cancelAddProduct()" style="background-color: #dc3545;">Cancel</button>
             <button type="submit" name="add_product">Confirm</button>
         </form>
     </div>
@@ -268,7 +268,7 @@ if (isset($_GET['edit_product_id'])) {
                     </a>
                     <!-- Delete Product Button -->
                     <a href="?delete_product_id=<?= $row['product_id'] ?>" onclick="return confirm('Are you sure you want to delete this product?')">
-                        <button>Delete</button>
+                        <button style="background-color: #dc3545;">Delete</button>
                     </a>
                 </td>
             </tr>
