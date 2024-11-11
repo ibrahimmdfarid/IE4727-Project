@@ -86,6 +86,9 @@ if (isset($_POST['update_product'])) {
     $stmt->execute();
     $stmt->close();
 
+    // Reset session variable
+    $_SESSION['is_editing'] = false;
+
     echo "<script>alert('Product updated successfully!');
             window.location.href = 'manage_products.php'
             </script>";
@@ -106,6 +109,11 @@ if (isset($_GET['edit_product_id'])) {
     $result = $stmt->get_result();
     $product_to_edit = $result->fetch_assoc();
     $stmt->close();
+
+    // Set session variable to indicate edit mode
+    $_SESSION['is_editing'] = true;
+} else {
+    $_SESSION['is_editing'] = false;
 }
 
 ?>
@@ -120,6 +128,14 @@ if (isset($_GET['edit_product_id'])) {
     <link rel="stylesheet" href="styles.css">
 
     <script>
+        // Check if the session variable indicates that we are editing a product
+        window.onload = function() {
+            if (<?php echo $_SESSION['is_editing'] ? 'true' : 'false'; ?>) {
+                const addProductButton = document.getElementById('addProductButton');
+                addProductButton.style.display = 'none';  // Hide the Add Product button
+            }
+        };
+
         // Toggle the Add Product form
         function toggleAddProductForm() {
             const form = document.getElementById('addProductForm');
@@ -141,6 +157,12 @@ if (isset($_GET['edit_product_id'])) {
         form.style.display = 'none';  // Hide the form
         addProductButton.style.display = 'inline-block';  // Show the button
         }
+
+        // Hide the Add Product button when the Edit Product button is clicked
+        function hideAddProductButton() {
+            const addProductButton = document.getElementById('addProductButton');
+            addProductButton.style.display = 'none';
+        }
     </script>
 </head>
 <body>
@@ -161,7 +183,8 @@ if (isset($_GET['edit_product_id'])) {
 </header>
 
 <div class="container">
-    <h1>Admin - Manage Products</h1>
+    <button type="button" onclick="window.location.href='adminpage.php';">Back to Admin Page</button>
+    <h1>Manage Products</h1>
 
     <!-- Button to show the Add Product form -->
     <button id="addProductButton" class="red-button" onclick="toggleAddProductForm()">Add Product</button>
@@ -234,7 +257,9 @@ if (isset($_GET['edit_product_id'])) {
             <label for="image_url"><br><br>Image URL</label>
             <input type="text" name="image_url" value="<?= htmlspecialchars($product_to_edit['image_url']) ?>" required>
 
-            <button type="submit" name="update_product">Update Product</button>
+            <!-- Cancel and Confirm buttons -->
+            <button type="button" style="background-color: #dc3545;" onclick="window.location.href='manage_products.php';">Cancel</button>
+            <button type="submit" name="update_product">Confirm</button>
         </form>
     <?php endif; ?>
 
@@ -263,7 +288,7 @@ if (isset($_GET['edit_product_id'])) {
                 <td><img src="<?= htmlspecialchars($row['image_url']) ?>" alt="<?= htmlspecialchars($row['name']) ?>" width="50" height="50"></td>
                 <td>
                     <!-- Edit Product Button -->
-                    <a href="?edit_product_id=<?= $row['product_id'] ?>">
+                    <a href="?edit_product_id=<?= $row['product_id'] ?>" onclick="hideAddProductButton()">
                         <button>Edit</button>
                     </a>
                     <!-- Delete Product Button -->

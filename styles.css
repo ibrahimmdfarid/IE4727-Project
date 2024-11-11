@@ -178,13 +178,14 @@ header .buttons button:disabled {
 
 }
 .container {
-    width: 1200px; /* Keeping original width */
+    width: 1200px;
     margin: 20px auto;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 5px;
     border: 1px solid #ddd;
 }
+
 h1 {
     text-align: center;
 }
