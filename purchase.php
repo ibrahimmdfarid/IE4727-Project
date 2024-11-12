@@ -71,6 +71,27 @@ foreach ($order_items as $item) {
 
 $stmt->close();
 
+// Insert each product in cart into Order_Items table with the generated order_id
+$sql = "INSERT INTO Order_Items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+
+foreach ($order_items as $item) {
+    $stmt->bind_param("iiid", $order_id, $item['product_id'], $item['quantity'], $item['price']);
+    $stmt->execute();
+}
+$stmt->close();
+
+// Deduct purchased quantity from stock_quantity in Products table
+$sql = "UPDATE Products SET stock_quantity = stock_quantity - ? WHERE product_id = ?";
+$stmt = $conn->prepare($sql);
+
+foreach ($order_items as $item) {
+    $stmt->bind_param("ii", $item['quantity'], $item['product_id']);
+    $stmt->execute();
+}
+
+$stmt->close();
+
 // Clear the user's cart after recording the order
 $sql = "DELETE FROM Cart WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
