@@ -84,4 +84,21 @@ echo "<script>
         alert('Thank you for your purchase! Your order has been placed with Order ID: $order_id');
         window.location.href = 'index.php';
       </script>";
+
+//EMAIL      
+// Set the email subject
+$subject = "Electro Mart Order ID: $order_id";
+
+// Set the email message
+$message = "Thank you for your purchase! Your order has been placed with Order ID: $order_id.";
+
+// Set additional headers
+$headers = "From: electromart@localhost\r\n";
+
+// Send the email
+if (mail($user_email, $subject, $message, $headers)) {
+    echo 'Email sent successfully!';
+} else {
+    echo 'Failed to send email.';
+}
 ?>
