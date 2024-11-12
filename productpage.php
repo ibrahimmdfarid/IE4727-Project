@@ -1,7 +1,45 @@
 <?php
 // Start the session
 session_start();
+
+$conn = new mysqli('localhost', 'root', '', 'project');
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Retrieve user_id based on the session email
+$user_email = $_SESSION['user_email'];
+$sql = "SELECT user_id FROM Users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $user_email);
+$stmt->execute();
+$stmt->bind_result($user_id);
+$stmt->fetch();
+$stmt->close();
+
+// Get the product_id from the URL (passed via query string)
+$product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
+
+// Set a default quantity value
+$quantity = 1;
+$exists_in_cart = false; // Flag to check if the product exists in the cart
+
+// Check if the product is already in the cart
+if ($product_id && isset($user_id)) {
+    $sql = "SELECT quantity FROM Cart WHERE user_id = ? AND product_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $user_id, $product_id);
+    $stmt->execute();
+    $stmt->bind_result($quantity);
+    if ($stmt->fetch()) {
+        // If product exists in the cart, use the stored quantity
+        $exists_in_cart = true;
+    }
+    $stmt->close();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -239,22 +277,21 @@ session_start();
         <p id="product-description">Product description goes here.</p>
         <p id="product-stock">In Stock: 0</p>
         <p id="product-price">Price: $0</p>
-</div>
-
         <div class="add-to-cart">
             <div class="quantity-controls">
                 <button id="decrement">-</button>
                 <input type="text" id="quantity" value="1" style="margin: 0 5px; width: 50px;" maxlength="3">
                 <button id="increment">+</button>
             </div>
-            <form method="POST" action="add_to_cart.php">
+            <form method="POST" action="add_to_cart.php>">
                 <input type="hidden" id="product_id" name="product_id">
                 <input type="hidden" id="product_name" name="product_name">
                 <input type="hidden" id="product_price" name="product_price">
                 <input type="hidden" id="selected_quantity" name="quantity" value="1">
-                <button type="submit" class="add-to-cart-btn" onclick="document.getElementById('selected_quantity').value = document.getElementById('quantity').value;">Add to Cart</button>
+                <button type="submit" class="add-to-cart-btn" onclick="document.getElementById('selected_quantity').value = document.getElementById('quantity').value;">
+                    <?php echo $exists_in_cart ? 'Update Cart' : 'Add to Cart'; ?>
+                </button>
             </form>
-            <!-- <button id="add-to-cart-btn" style="margin-left: 20px;">Add to Cart</button> -->
         </div>
     </div>
 </div>
@@ -293,8 +330,8 @@ session_start();
     // Function to display product details
     async function displayProduct() {
         const productId = getQueryParam('product_id');
-    
-    // Fetch product data from the server
+        
+        // Fetch product data from the server
         try {
             const response = await fetch(`getProduct.php?product_id=${productId}`);
             if (!response.ok) {
@@ -315,6 +352,24 @@ session_start();
                 document.getElementById('product_id').value = product.product_id;
                 document.getElementById('product_name').value = product.name;
                 document.getElementById('product_price').value = product.price;
+
+                // Set the initial quantity to the value from the database
+                let quantity = <?php echo $quantity; ?>; // Get the PHP value from the session
+
+                // Ensure quantity is within stock limits
+                const stockQuantity = product.stock_quantity;
+
+                if (quantity > stockQuantity) {
+                    quantity = stockQuantity;
+                } else if (quantity < 1) {
+                    quantity = 1;
+                }
+
+                // Set the initial quantity on the page
+                document.getElementById('quantity').value = quantity;
+
+                // Set the quantity in the hidden form field as well
+                document.getElementById('selected_quantity').value = quantity;
             } else {
                 // Handle case where product is not found
                 document.querySelector('.container').innerHTML = '<p>Product not found.</p>';
@@ -324,7 +379,6 @@ session_start();
             document.querySelector('.container').innerHTML = `<p>${error.message}</p>`;
         }
     }
-
 
     // Quantity control functions
     function updateQuantity(step) {
@@ -343,6 +397,7 @@ session_start();
         }
 
         quantityInput.value = currentQuantity;
+        document.getElementById('selected_quantity').value = currentQuantity; // Update the form field
     }
 
     // Event listener for quantity input
@@ -363,6 +418,8 @@ session_start();
         } else if (currentQuantity > stockQuantity) {
             this.value = stockQuantity;
         }
+
+        document.getElementById('selected_quantity').value = this.value; // Update the form field
     });
 
     document.getElementById('decrement').addEventListener('click', function() {

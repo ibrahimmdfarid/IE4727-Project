@@ -5,6 +5,7 @@ if (!isset($_SESSION['user_email'])) {
     exit();
 }
 
+// Connect to the database
 $conn = new mysqli('localhost', 'root', '', 'project');
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -33,11 +34,12 @@ $product_exists = $stmt->fetch();
 $stmt->close();
 
 if ($product_exists) {
-    $new_quantity = $existing_quantity + $quantity_to_add;
+    // Update with the new quantity instead of adding
     $sql = "UPDATE Cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iii", $new_quantity, $user_id, $product_id);
+    $stmt->bind_param("iii", $quantity_to_add, $user_id, $product_id);
 } else {
+    // Insert new entry if product is not in the cart
     $sql = "INSERT INTO Cart (user_id, product_id, quantity) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iii", $user_id, $product_id, $quantity_to_add);
