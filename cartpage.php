@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Get cart items for the user
-$sql = "SELECT Cart.product_id, Cart.quantity, Products.name, Products.price 
+$sql = "SELECT Cart.product_id, Cart.quantity, Products.name, Products.price, Products.image_url
         FROM Cart JOIN Products ON Cart.product_id = Products.product_id 
         WHERE Cart.user_id = ?";
 $stmt = $conn->prepare($sql);
@@ -185,7 +185,7 @@ $total_price = 0;
                 $total_price += $subtotal;
             ?>
             <tr>
-                <td>INSERT IMAGE</td>
+                <td><img id="product-image" class="product-image" src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="Product Image"></td>
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td>
                     <!-- Form to update quantity -->
