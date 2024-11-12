@@ -239,6 +239,11 @@ if ($product_id && isset($user_id)) {
             text-decoration: underline; /* Underline the text on hover */
             color: #A8D08D; /* Change text color on hover */
         }
+
+        .add-to-cart-btn:disabled {
+            background-color: #a5d8a3; /* Grayish color for disabled state */
+            cursor: not-allowed; /* Not-allowed cursor for disabled button */
+        }
     </style>
     </head>
 <body>
@@ -330,8 +335,7 @@ if ($product_id && isset($user_id)) {
     // Function to display product details
     async function displayProduct() {
         const productId = getQueryParam('product_id');
-        
-        // Fetch product data from the server
+
         try {
             const response = await fetch(`getProduct.php?product_id=${productId}`);
             if (!response.ok) {
@@ -340,7 +344,6 @@ if ($product_id && isset($user_id)) {
         
             const product = await response.json();
 
-            // Check if the product is available
             if (product && product.product_id) {
                 document.getElementById('product-image').src = product.image_url;
                 document.getElementById('product-name').textContent = product.name;
@@ -348,17 +351,16 @@ if ($product_id && isset($user_id)) {
                 document.getElementById('product-stock').textContent = `In Stock: ${product.stock_quantity}`;
                 document.getElementById('product-description').textContent = product.description;
 
-                // Set the form hidden fields based on fetched product details
+                // Set hidden form fields based on fetched product details
                 document.getElementById('product_id').value = product.product_id;
                 document.getElementById('product_name').value = product.name;
                 document.getElementById('product_price').value = product.price;
 
-                // Set the initial quantity to the value from the database
-                let quantity = <?php echo $quantity; ?>; // Get the PHP value from the session
+                // Set the initial quantity to the value from the database if it exists
+                let quantity = <?php echo $quantity ?? 1; ?>; // Default to 1 if $quantity is not set
 
                 // Ensure quantity is within stock limits
                 const stockQuantity = product.stock_quantity;
-
                 if (quantity > stockQuantity) {
                     quantity = stockQuantity;
                 } else if (quantity < 1) {
@@ -367,11 +369,16 @@ if ($product_id && isset($user_id)) {
 
                 // Set the initial quantity on the page
                 document.getElementById('quantity').value = quantity;
-
-                // Set the quantity in the hidden form field as well
                 document.getElementById('selected_quantity').value = quantity;
+
+                // Disable "Add to Cart" button if stock is 0
+                const addToCartButton = document.querySelector('.add-to-cart-btn');
+                if (stockQuantity === 0) {
+                    addToCartButton.disabled = true;
+                    addToCartButton.textContent = "Out of Stock";
+                    addToCartButton.style.backgroundColor = "#a5d8a3"; // Optional: change color for disabled state
+                }
             } else {
-                // Handle case where product is not found
                 document.querySelector('.container').innerHTML = '<p>Product not found.</p>';
             }
         } catch (error) {
@@ -379,6 +386,7 @@ if ($product_id && isset($user_id)) {
             document.querySelector('.container').innerHTML = `<p>${error.message}</p>`;
         }
     }
+
 
     // Quantity control functions
     function updateQuantity(step) {
