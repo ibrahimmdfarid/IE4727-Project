@@ -143,11 +143,17 @@ $result = $stmt->get_result();
     <form method="POST" action="purchase.php">
         <div class="form-group">
             <label for="card_number">Card Number:</label>
-            <input type="text" name="card_number" id="card_number" placeholder="Enter your card number" required>
+            <input type="text" name="card_number" id="card_number" 
+                placeholder="Enter your card number" 
+                value="<?php echo isset($_SESSION['user_card_details']) ? htmlspecialchars($_SESSION['user_card_details']) : ''; ?>" 
+                required>
         </div>
         <div class="form-group">
             <label for="billing_address">Billing Address:</label>
-            <input type="text" name="billing_address" id="billing_address" placeholder="Enter your billing address" required>
+            <input type="text" name="billing_address" id="billing_address" 
+                placeholder="Enter your billing address" 
+                value="<?php echo isset($_SESSION['user_address']) ? htmlspecialchars($_SESSION['user_address']) : ''; ?>" 
+                required>
         </div>
         <button type="submit" class="checkout-btn">Confirm Purchase</button>
     </form>
