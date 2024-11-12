@@ -29,9 +29,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if this request is for updating quantity or removing the product
     if (isset($_POST['quantity'])) {
         $new_quantity = $_POST['quantity'];
-        // Ensure quantity is at least 1
-        $new_quantity = max(1, (int)$new_quantity);
+        $new_quantity = max(1, (int)$new_quantity); // Ensure quantity is at least 1
 
+        // Retrieve the stock quantity for this product
+        $sql = "SELECT stock_quantity FROM Products WHERE product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $product_id);
+        $stmt->execute();
+        $stmt->bind_result($stock_quantity);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Set the new quantity to stock quantity if it exceeds available stock
+        if ($new_quantity > $stock_quantity) {
+            $new_quantity = $stock_quantity;
+        }
+
+        // Update the quantity in the Cart
         $sql = "UPDATE Cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iii", $new_quantity, $user_id, $product_id);
