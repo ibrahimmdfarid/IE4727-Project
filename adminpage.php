@@ -87,6 +87,25 @@ $conn->close();
     .show {
         display: block;
     }
+
+    /* Styles for the cart count bubble */
+    .cart-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .cart-count-bubble {
+        position: absolute;
+        top: -5px;
+        right: -10px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 50%;
+        display: none; /* Hide by default */
+    }
 </style>
 
 <head>
@@ -99,7 +118,7 @@ $conn->close();
 <body>
 
 <header>
-    <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <a href="index.php"><img src="images/store_logo.png" class="store_logo" alt="Store Logo"></a>
     <form class="search-container" method="GET" action="index.php">
         <input type="text" class="search-bar" name="search" placeholder="Search for products...">
         <button type="submit" class="search-button">
@@ -117,13 +136,16 @@ $conn->close();
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
-            <a href="cartpage.php"><button>Cart</button></a>
-
+            <a href="cartpage.php" class="cart-container">
+                <img src="images/cart_icon.png" alt="Cart" class="cart-icon" style="width: 32px; height: 32px;">
+                <span class="cart-count-bubble">0</span>
+            </a>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
             <a href="signup_page.php"><button>Sign Up</button></a>
         <?php endif; ?>
+        
     </div>
 </header>
 

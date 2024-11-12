@@ -243,13 +243,13 @@ if (isset($_POST['signup'])) {
             text-decoration: underline; /* Underline the text on hover */
             color: #A8D08D; /* Change text color to white on hover */
         }
-
+        
     </style>
 </head>
 <body>
 
 <header>
-    <a href="index.php"><img src="images/store_logo.png" alt="Store Logo"></a>
+    <a href="index.php"><img src="images/store_logo.png" class="store_logo" alt="Store Logo"></a>
     <form class="search-container" method="GET" action="index.php">
         <input type="text" class="search-bar" name="search" placeholder="Search for products...">
         <button type="submit" class="search-button">
@@ -267,12 +267,16 @@ if (isset($_POST['signup'])) {
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
-            <a href="cartpage.php"><button>Cart</button></a>
+            <a href="cartpage.php" class="cart-container">
+                <img src="images/cart_icon.png" alt="Cart" class="cart-icon" style="width: 32px; height: 32px;">
+                <span class="cart-count-bubble">0</span>
+            </a>
         <?php else: ?>
             <!-- Show login button if not logged in -->
             <a href="loginpage.html"><button>Login</button></a>
             <a href="signup_page.php"><button>Sign Up</button></a>
         <?php endif; ?>
+        
     </div>
 </header>
 
