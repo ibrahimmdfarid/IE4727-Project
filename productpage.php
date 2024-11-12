@@ -283,7 +283,7 @@ if ($product_id && isset($user_id)) {
                 <input type="text" id="quantity" value="1" style="margin: 0 5px; width: 50px;" maxlength="3">
                 <button id="increment">+</button>
             </div>
-            <form method="POST" action="add_to_cart.php>">
+            <form method="POST" action="add_to_cart.php">
                 <input type="hidden" id="product_id" name="product_id">
                 <input type="hidden" id="product_name" name="product_name">
                 <input type="hidden" id="product_price" name="product_price">
