@@ -49,6 +49,7 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 
 // Insert a new record into the Orders table
+date_default_timezone_set('Asia/Singapore');
 $order_date = date("Y-m-d H:i:s");
 $status = 'pending';
 
