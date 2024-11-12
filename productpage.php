@@ -239,7 +239,8 @@ session_start();
         <p id="product-description">Product description goes here.</p>
         <p id="product-stock">In Stock: 0</p>
         <p id="product-price">Price: $0</p>
-        
+</div>
+
         <div class="add-to-cart">
             <div class="quantity-controls">
                 <button id="decrement">-</button>
@@ -247,9 +248,9 @@ session_start();
                 <button id="increment">+</button>
             </div>
             <form method="POST" action="add_to_cart.php">
-                <input type="hidden" name="product_id" value="1"> <!-- Change this -->
-                <input type="hidden" name="product_name" value="iPad">
-                <input type="hidden" name="product_price" value="999">
+                <input type="hidden" id="product_id" name="product_id">
+                <input type="hidden" id="product_name" name="product_name">
+                <input type="hidden" id="product_price" name="product_price">
                 <input type="hidden" id="selected_quantity" name="quantity" value="1">
                 <button type="submit" class="add-to-cart-btn" onclick="document.getElementById('selected_quantity').value = document.getElementById('quantity').value;">Add to Cart</button>
             </form>
@@ -292,14 +293,14 @@ session_start();
     // Function to display product details
     async function displayProduct() {
         const productId = getQueryParam('product_id');
-        
-        // Fetch product data from the server
+    
+    // Fetch product data from the server
         try {
             const response = await fetch(`getProduct.php?product_id=${productId}`);
             if (!response.ok) {
                 throw new Error("Product not found.");
             }
-            
+        
             const product = await response.json();
 
             // Check if the product is available
@@ -309,6 +310,11 @@ session_start();
                 document.getElementById('product-price').textContent = `Price: $${product.price}`;
                 document.getElementById('product-stock').textContent = `In Stock: ${product.stock_quantity}`;
                 document.getElementById('product-description').textContent = product.description;
+
+                // Set the form hidden fields based on fetched product details
+                document.getElementById('product_id').value = product.product_id;
+                document.getElementById('product_name').value = product.name;
+                document.getElementById('product_price').value = product.price;
             } else {
                 // Handle case where product is not found
                 document.querySelector('.container').innerHTML = '<p>Product not found.</p>';
@@ -318,6 +324,7 @@ session_start();
             document.querySelector('.container').innerHTML = `<p>${error.message}</p>`;
         }
     }
+
 
     // Quantity control functions
     function updateQuantity(step) {
