@@ -219,6 +219,11 @@ if ($product_id && isset($user_id)) {
             border: 1px solid #3a3333; 
         }
     
+        .add-to-cart-btn:disabled {
+            background-color: #a5d8a3; /* Grayish color for disabled state */
+            cursor: not-allowed; /* Not-allowed cursor for disabled button */
+        }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -238,11 +243,6 @@ if ($product_id && isset($user_id)) {
         footer a:hover {
             text-decoration: underline; /* Underline the text on hover */
             color: #A8D08D; /* Change text color on hover */
-        }
-
-        .add-to-cart-btn:disabled {
-            background-color: #a5d8a3; /* Grayish color for disabled state */
-            cursor: not-allowed; /* Not-allowed cursor for disabled button */
         }
     </style>
     </head>
