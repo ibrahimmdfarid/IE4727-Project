@@ -57,7 +57,7 @@ if (isset($_POST['login'])) {
             }
 
             // Check if the user is an admin
-            if ($name == "admin") {
+            if ($user_email == "admin@project.com") {
                 // Redirect to admin page if the user is an admin
                 header("Location: adminpage.php");
                 exit();
