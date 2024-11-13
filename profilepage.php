@@ -343,7 +343,7 @@ $conn->close();
     </form>
 
     <!-- Notification Section -->
-    <div class="notification-section">
+    <!-- <div class="notification-section">
         <div class="section-title">Notifications</div>
         <div class="notification">
             <p><strong>Order #12345</strong> - Shipped on Oct 1, 2024</p>
@@ -351,7 +351,7 @@ $conn->close();
         <div class="notification">
             <p><strong>Order #12346</strong> - Delivered on Sep 28, 2024</p>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <footer>

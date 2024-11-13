@@ -146,9 +146,9 @@ $conn->close();
     <p>Select an option below:</p>
     
     <!-- Sales Report Button -->
-    <a href="sales_report.php">
+    <!-- <a href="sales_report.php">
         <button class="btn">Sales Report</button>
-    </a>
+    </a> -->
     
     <!-- Manage Products Button -->
     <a href="manage_products.php">
