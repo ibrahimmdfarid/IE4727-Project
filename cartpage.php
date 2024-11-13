@@ -271,8 +271,6 @@ $total_price = 0;
         <div class="summary">
             <h3>Cart Summary</h3>
             <p id="total-price">Total Price: $<?php echo number_format($total_price, 2); ?></p>
-            <p id="shipping-fee">Shipping Fee: $0.00</p>
-            <p id="grand-total">Grand Total: $0.00</p>
             <?php $_SESSION['total_price'] = $total_price; ?>
             <form method="POST" action="checkoutpage.php">
                 <button class="checkout-btn" id="checkout-btn" type="submit">Proceed to Checkout</button>

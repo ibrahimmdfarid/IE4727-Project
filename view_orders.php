@@ -24,7 +24,7 @@ $stmt->fetch();
 $stmt->close();
 
 // Check if the logged-in user is an admin
-if ($user_name !== 'admin') {
+if ($user_email !== 'admin@project.com') {
     echo "<script>alert('You are not authorized to access this page'); window.location.href = 'index.php';</script>";
     exit();
 }
