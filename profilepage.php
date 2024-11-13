@@ -1,15 +1,15 @@
 <?php
 // Start the session
 session_start();
+if (!isset($_SESSION['user_email'])) {
+    echo "<script>
+            alert('Please log in first');
+            window.location.href = 'loginpage.html';
+          </script>";
+    exit();
+}
 
-// Database credentials
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "project";
-
-// Create a database connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli('localhost', 'root', '', 'project');
 
 // Check connection
 if ($conn->connect_error) {

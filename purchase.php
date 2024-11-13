@@ -1,7 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_email'])) {
-    header("Location: loginpage.html");
+    echo "<script>
+            alert('Please log in first');
+            window.location.href = 'loginpage.html';
+          </script>";
     exit();
 }
 

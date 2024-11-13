@@ -1,13 +1,6 @@
 <?php
 if (isset($_POST['login'])) {
-    // Database credentials
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "project";
-
-    // Create database connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli('localhost', 'root', '', 'project');
 
     // Get form data
     $email = $_POST['email'];

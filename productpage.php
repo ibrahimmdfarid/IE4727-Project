@@ -9,14 +9,17 @@ if ($conn->connect_error) {
 }
 
 // Retrieve user_id based on the session email
-$user_email = $_SESSION['user_email'];
-$sql = "SELECT user_id FROM Users WHERE email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $user_email);
-$stmt->execute();
-$stmt->bind_result($user_id);
-$stmt->fetch();
-$stmt->close();
+// Check if the user email is set in the session
+if (isset($_SESSION['user_email'])) {
+    $user_email = $_SESSION['user_email'];
+    $sql = "SELECT user_id FROM Users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $user_email);
+    $stmt->execute();
+    $stmt->bind_result($user_id);
+    $stmt->fetch();
+    $stmt->close();
+}
 
 // Get the product_id from the URL (passed via query string)
 $product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
