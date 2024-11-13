@@ -29,26 +29,9 @@ if ($user_email !== 'electromart@localhost') {
     exit();
 }
 
-// Simulated database of orders (replace this with actual database queries in the future)
-$orders = [
-    [
-        'order_id' => 101,
-        'user_id' => 5,
-        'order_date' => '2024-11-07',
-        'status' => 'Shipped',
-        'total_amount' => 299.99,
-        'shipping_address' => '1234 Elm Street, City, Country'
-    ],
-    [
-        'order_id' => 102,
-        'user_id' => 8,
-        'order_date' => '2024-11-06',
-        'status' => 'Processing',
-        'total_amount' => 89.99,
-        'shipping_address' => '5678 Oak Avenue, City, Country'
-    ],
-    // Add more simulated orders as needed
-];
+// Fetch orders from the database
+$orderQuery = "SELECT order_id, user_id, order_date, status, total_amount, shipping_address FROM Orders";
+$orderResult = $conn->query($orderQuery);
 
 ?>
 
@@ -180,23 +163,41 @@ $orders = [
 
         // Update the order status
         function updateStatus() {
-            const orderId = document.getElementById('order_id').value;
-            const newStatus = document.getElementById('statusSelect').value;
-            const currentStatus = document.getElementById('current_status').innerText;
+        const orderId = document.getElementById('order_id').value;
+        const newStatus = document.getElementById('statusSelect').value;
+        const currentStatus = document.getElementById('current_status').innerText;
 
-            if (newStatus === currentStatus) {
-                alert('No changes were made. The status is the same as the current one.');
-                return;
-            }
-
-            const confirmation = confirm(`Are you sure you want to change the status to "${newStatus}"?`);
-            if (confirmation) {
-                // Call backend code to update the status in the database
-                console.log(`Status of order ${orderId} updated to ${newStatus}`);
-                // After updating the status, close the modal
-                closeModal();
-            }
+        if (newStatus === currentStatus) {
+            alert('No changes were made. The status is the same as the current one.');
+            return;
         }
+
+        const confirmation = confirm(`Are you sure you want to change the status to "${newStatus}"?`);
+        if (confirmation) {
+            // Send AJAX request to update the status
+            fetch('update_status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `order_id=${orderId}&new_status=${newStatus}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order status updated successfully!');
+                    document.getElementById('current_status').innerText = newStatus; // Update status in modal
+                    closeModal(); // Close modal
+                    location.reload(); // Reload page to see updated status in table
+                } else {
+                    alert('Failed to update order status: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    }
     </script>
 </head>
 <body>
@@ -252,19 +253,25 @@ $orders = [
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($orders as $order): ?>
-            <tr>
-                <td><?= htmlspecialchars($order['order_id']) ?></td>
-                <td><?= htmlspecialchars($order['user_id']) ?></td>
-                <td><?= htmlspecialchars($order['order_date']) ?></td>
-                <td><?= htmlspecialchars($order['status']) ?></td>
-                <td>$<?= number_format($order['total_amount'], 2) ?></td>
-                <td><?= htmlspecialchars($order['shipping_address']) ?></td>
-                <td>
-                    <button onclick="openModal(<?= $order['order_id'] ?>, '<?= $order['status'] ?>')">Update Status</button>
-                </td>
-            </tr>
-            <?php endforeach; ?>
+            <?php if ($orderResult->num_rows > 0): ?>
+                <?php while($order = $orderResult->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($order['order_id']) ?></td>
+                        <td><?= htmlspecialchars($order['user_id']) ?></td>
+                        <td><?= htmlspecialchars($order['order_date']) ?></td>
+                        <td><?= htmlspecialchars($order['status']) ?></td>
+                        <td>$<?= number_format($order['total_amount'], 2) ?></td>
+                        <td><?= htmlspecialchars($order['shipping_address']) ?></td>
+                        <td>
+                            <button onclick="openModal(<?= $order['order_id'] ?>, '<?= $order['status'] ?>')">Update Status</button>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="7">No orders found.</td>
+                </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
