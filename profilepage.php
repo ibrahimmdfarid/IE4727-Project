@@ -1,15 +1,15 @@
 <?php
 // Start the session
 session_start();
+if (!isset($_SESSION['user_email'])) {
+    echo "<script>
+            alert('Please log in first');
+            window.location.href = 'loginpage.html';
+          </script>";
+    exit();
+}
 
-// Database credentials
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "project";
-
-// Create a database connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli('localhost', 'root', '', 'project');
 
 // Check connection
 if ($conn->connect_error) {
@@ -343,7 +343,7 @@ $conn->close();
     </form>
 
     <!-- Notification Section -->
-    <div class="notification-section">
+    <!-- <div class="notification-section">
         <div class="section-title">Notifications</div>
         <div class="notification">
             <p><strong>Order #12345</strong> - Shipped on Oct 1, 2024</p>
@@ -351,7 +351,7 @@ $conn->close();
         <div class="notification">
             <p><strong>Order #12346</strong> - Delivered on Sep 28, 2024</p>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <footer>

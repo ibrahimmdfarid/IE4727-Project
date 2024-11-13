@@ -24,7 +24,7 @@ $stmt->fetch();
 $stmt->close();
 
 // Check if the logged-in user is an admin
-if ($user_email !== 'admin@project.com') {
+if ($user_email !== 'electromart@localhost') {
     echo "<script>alert('You are not authorized to access this page'); window.location.href = 'index.php';</script>";
     exit();
 }
@@ -146,9 +146,9 @@ $conn->close();
     <p>Select an option below:</p>
     
     <!-- Sales Report Button -->
-    <a href="sales_report.php">
+    <!-- <a href="sales_report.php">
         <button class="btn">Sales Report</button>
-    </a>
+    </a> -->
     
     <!-- Manage Products Button -->
     <a href="manage_products.php">

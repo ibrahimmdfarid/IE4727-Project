@@ -1,13 +1,6 @@
 <?php
 if (isset($_POST['login'])) {
-    // Database credentials
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "project";
-
-    // Create database connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli('localhost', 'root', '', 'project');
 
     // Get form data
     $email = $_POST['email'];
@@ -57,7 +50,7 @@ if (isset($_POST['login'])) {
             }
 
             // Check if the user is an admin
-            if ($user_email == "admin@project.com") {
+            if ($user_email == "electromart@localhost") {
                 // Redirect to admin page if the user is an admin
                 header("Location: adminpage.php");
                 exit();
