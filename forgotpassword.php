@@ -37,21 +37,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $update_stmt->bind_param("ss", $hashed_password, $email);
                 
                 if ($update_stmt->execute()) {
-                    echo "Password updated successfully.";
+                    echo "<script>
+                            alert('Password updated successfully.');
+                          </script>";
                 } else {
-                    echo "Error updating password.";
+                    echo "<script>
+                            alert('Error updating password.');
+                          </script>";
                 }
-
+                
                 $update_stmt->close();
-            } else {
-                echo "Passwords do not match.";
-            }
-        } else {
-            echo "Card number is incorrect.";
-        }
-    } else {
-        echo "Email does not exist.";
-    }
+                } else {
+                    echo "<script>
+                            alert('Passwords do not match.');
+                          </script>";
+                }
+                } else {
+                    echo "<script>
+                            alert('Card number is incorrect.');
+                          </script>";
+                }
+                } else {
+                    echo "<script>
+                            alert('Email does not exist.');
+                          </script>";
+                }
 
     $stmt->close();
 }
