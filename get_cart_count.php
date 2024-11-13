@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 $conn = new mysqli('localhost', 'root', '', 'project');
 
 if ($conn->connect_error) {
