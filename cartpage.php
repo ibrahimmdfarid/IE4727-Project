@@ -269,8 +269,8 @@ $total_price = 0;
         </table>
         
         <div class="summary">
-            <h3>Cart Summary</h3>
-            <p id="total-price">Total Price: $<?php echo number_format($total_price, 2); ?></p>
+            <h1>Cart Summary</h1>
+            <h1 id="total-price"><strong>Total Price: $<?php echo number_format($total_price, 2); ?></strong></h1>
             <?php $_SESSION['total_price'] = $total_price; ?>
             <form method="POST" action="checkoutpage.php">
                 <button class="checkout-btn" id="checkout-btn" type="submit">Proceed to Checkout</button>
