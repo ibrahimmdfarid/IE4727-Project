@@ -22,7 +22,7 @@ $stmt->fetch();
 $stmt->close();
 
 // Get all cart items for the user to calculate the total amount and prepare order items
-$sql = "SELECT Cart.product_id, Cart.quantity, Products.price 
+$sql = "SELECT Cart.product_id, Cart.quantity, Products.price, Products.name 
         FROM Cart JOIN Products ON Cart.product_id = Products.product_id 
         WHERE Cart.user_id = ?";
 $stmt = $conn->prepare($sql);
@@ -33,6 +33,10 @@ $result = $stmt->get_result();
 $total_amount = 0;
 $order_items = [];
 
+// Initialize email message with order summary
+$email_message = "Thank you for your purchase! Here are the details of your order:\n\n";
+$email_message .= "Items:\n";
+
 // Calculate total amount and prepare data for order items
 while ($row = $result->fetch_assoc()) {
     $subtotal = $row['price'] * $row['quantity'];
@@ -42,10 +46,18 @@ while ($row = $result->fetch_assoc()) {
     $order_items[] = [
         'product_id' => $row['product_id'],
         'quantity' => $row['quantity'],
-        'price' => $row['price']
+        'price' => $row['price'],
+        'name' => $row['name']
     ];
+
+    // Append product details to email message
+    $email_message .= "Product: " . $row['name'] . "\n";
+    $email_message .= "Quantity: " . $row['quantity'] . "\n";
+    $email_message .= "Price: $" . number_format($row['price'], 2) . "\n";
+    $email_message .= "Subtotal: $" . number_format($subtotal, 2) . "\n\n";
 }
 
+$email_message .= "Total Amount: $" . number_format($total_amount, 2) . "\n";
 $stmt->close();
 
 // Insert a new record into the Orders table
@@ -69,16 +81,6 @@ foreach ($order_items as $item) {
     $stmt->execute();
 }
 
-$stmt->close();
-
-// Insert each product in cart into Order_Items table with the generated order_id
-$sql = "INSERT INTO Order_Items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-
-foreach ($order_items as $item) {
-    $stmt->bind_param("iiid", $order_id, $item['product_id'], $item['quantity'], $item['price']);
-    $stmt->execute();
-}
 $stmt->close();
 
 // Deduct purchased quantity from stock_quantity in Products table
@@ -107,18 +109,15 @@ echo "<script>
         window.location.href = 'index.php';
       </script>";
 
-//EMAIL      
+// EMAIL      
 // Set the email subject
 $subject = "Electro Mart Order ID: $order_id";
-
-// Set the email message
-$message = "Thank you for your purchase! Your order has been placed with Order ID: $order_id.";
 
 // Set additional headers
 $headers = "From: electromart@localhost\r\n";
 
-// Send the email
-if (mail($user_email, $subject, $message, $headers)) {
+// Send the email with detailed product information
+if (mail($user_email, $subject, $email_message, $headers)) {
     echo 'Email sent successfully!';
 } else {
     echo 'Failed to send email.';
