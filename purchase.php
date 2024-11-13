@@ -11,13 +11,13 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Retrieve user_id based on the session email
+// Retrieve user_id and address based on the session email
 $user_email = $_SESSION['user_email'];
-$sql = "SELECT user_id FROM Users WHERE email = ?";
+$sql = "SELECT user_id, address FROM Users WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $user_email);
 $stmt->execute();
-$stmt->bind_result($user_id);
+$stmt->bind_result($user_id, $user_address);
 $stmt->fetch();
 $stmt->close();
 
@@ -60,14 +60,15 @@ while ($row = $result->fetch_assoc()) {
 $email_message .= "Total Amount: $" . number_format($total_amount, 2) . "\n";
 $stmt->close();
 
-// Insert a new record into the Orders table
+// Insert a new record into the Orders table, including shipping_address
 date_default_timezone_set('Asia/Singapore');
 $order_date = date("Y-m-d H:i:s");
-$status = 'pending';
+$status = 'Pending';
 
-$sql = "INSERT INTO Orders (user_id, order_date, status, total_amount) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO Orders (user_id, order_date, status, total_amount, shipping_address) 
+        VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("issd", $user_id, $order_date, $status, $total_amount);
+$stmt->bind_param("issds", $user_id, $order_date, $status, $total_amount, $user_address);
 $stmt->execute();
 $order_id = $stmt->insert_id;  // Get the last inserted order ID for use in Order_Items table
 $stmt->close();

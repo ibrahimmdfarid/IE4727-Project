@@ -23,14 +23,35 @@ if ($order_id > 0 && !empty($new_status)) {
     $stmt->bind_param("si", $new_status, $order_id);
 
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update status']);
-    }
+        // Get the user ID for the order
+        $stmt = $conn->prepare("SELECT user_id FROM Orders WHERE order_id = ?");
+        $stmt->bind_param("i", $order_id);
+        $stmt->execute();
+        $stmt->bind_result($user_id);
+        $stmt->fetch();
+        $stmt->close();
 
-    $stmt->close();
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid input']);
+        // Retrieve the user's email based on user_id
+        $stmt = $conn->prepare("SELECT email FROM Users WHERE user_id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $stmt->bind_result($user_email);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Send email notification
+        if (!empty($user_email)) {
+            $subject = "Electro Mart Order ID {$order_id} Status Update";
+            $message = "Dear Customer,\n\nYour order has been updated to the status: {$new_status}.\n\nThank you for shopping with us!";
+            $headers = "From: electromart@localhost\r\n";
+
+            if (mail($user_email, $subject, $message, $headers)) {
+                echo json_encode(['success' => true, 'message' => 'Status updated and email sent successfully']);
+            } else {
+                echo json_encode(['success' => true, 'message' => 'Status updated, but email could not be sent']);
+            }
+        }
+    }
 }
 
 $conn->close();
