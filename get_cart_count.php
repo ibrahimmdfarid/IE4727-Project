@@ -1,18 +1,29 @@
 <?php
 session_start();
+$conn = new mysqli('localhost', 'root', '', 'project');
 
-// Ensure that the cart is initialized
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Calculate the item count
-$cart_count = 0;
-foreach ($_SESSION['cart'] as $item) {
-    $cart_count += $item['quantity']; // Assuming each item in cart has a 'quantity' field
-}
+$user_email = $_SESSION['user_email'];
+$stmt = $conn->prepare("SELECT user_id FROM Users WHERE email = ?");
+$stmt->bind_param("s", $user_email);
+$stmt->execute();
+$stmt->bind_result($user_id);
+$stmt->fetch();
+$stmt->close();
 
-// Return the count as JSON
-header('Content-Type: application/json');
-echo json_encode(['count' => $cart_count]);
+if ($user_id) {
+    $stmt = $conn->prepare("SELECT SUM(quantity) FROM Cart WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($cart_count);
+    $stmt->fetch();
+    $stmt->close();
+
+    echo json_encode(['count' => $cart_count]);
+} else {
+    echo json_encode(['count' => 0]);
+}
 ?>
