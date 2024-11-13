@@ -39,6 +39,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Display a success message and redirect
     echo "<script>alert('Your enquiry has been submitted successfully!');</script>";
     echo "<script>window.location.href = 'contactpage.php';</script>";
+
+    $to = "electromart@localhost";
+    $headers = "From: " . $user_email . "\r\n";
+    
+    // Send the email
+    if (mail($to, $subject, $body, $headers)) {
+        echo "Your message has been sent successfully!";
+    } else {
+        echo "There was an error sending your message. Please try again.";
+    }
 }
 ?>
 
