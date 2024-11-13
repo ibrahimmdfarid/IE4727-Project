@@ -399,7 +399,7 @@ if ($product_id && isset($user_id)) {
                 if (stockQuantity === 0) {
                     addToCartButton.disabled = true;
                     addToCartButton.textContent = "Out of Stock";
-                    addToCartButton.style.backgroundColor = "#a5d8a3"; // Optional: change color for disabled state
+                    addToCartButton.style.backgroundColor = "#a5d8a3";
                 }
             } else {
                 document.querySelector('.container').innerHTML = '<p>Product not found.</p>';
