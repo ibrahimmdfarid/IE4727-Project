@@ -3,7 +3,10 @@
 session_start();
 
 if (!isset($_SESSION['user_email'])) {
-    header("Location: loginpage.html");
+    echo "<script>
+            alert('Please log in first');
+            window.location.href = 'loginpage.html';
+          </script>";
     exit();
 }
 
@@ -29,9 +32,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if this request is for updating quantity or removing the product
     if (isset($_POST['quantity'])) {
         $new_quantity = $_POST['quantity'];
-        // Ensure quantity is at least 1
-        $new_quantity = max(1, (int)$new_quantity);
+        $new_quantity = max(1, (int)$new_quantity); // Ensure quantity is at least 1
 
+        // Retrieve the stock quantity for this product
+        $sql = "SELECT stock_quantity FROM Products WHERE product_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $product_id);
+        $stmt->execute();
+        $stmt->bind_result($stock_quantity);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Set the new quantity to stock quantity if it exceeds available stock
+        if ($new_quantity > $stock_quantity) {
+            $new_quantity = $stock_quantity;
+        }
+
+        // Update the quantity in the Cart
         $sql = "UPDATE Cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iii", $new_quantity, $user_id, $product_id);
@@ -48,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Get cart items for the user
-$sql = "SELECT Cart.product_id, Cart.quantity, Products.name, Products.price 
+$sql = "SELECT Cart.product_id, Cart.quantity, Products.name, Products.price, Products.image_url
         FROM Cart JOIN Products ON Cart.product_id = Products.product_id 
         WHERE Cart.user_id = ?";
 $stmt = $conn->prepare($sql);
@@ -229,7 +246,7 @@ $total_price = 0;
                 $total_price += $subtotal;
             ?>
             <tr>
-                <td>INSERT IMAGE</td>
+                <td><img id="product-image" class="product-image" src="<?php echo htmlspecialchars($row['image_url']); ?>" alt="Product Image"></td>
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td>
                     <!-- Form to update quantity -->
@@ -255,10 +272,8 @@ $total_price = 0;
         </table>
         
         <div class="summary">
-            <h3>Cart Summary</h3>
-            <p id="total-price">Total Price: $<?php echo number_format($total_price, 2); ?></p>
-            <p id="shipping-fee">Shipping Fee: $0.00</p>
-            <p id="grand-total">Grand Total: $0.00</p>
+            <h1>Cart Summary</h1>
+            <h1 id="total-price"><strong>Total Price: $<?php echo number_format($total_price, 2); ?></strong></h1>
             <?php $_SESSION['total_price'] = $total_price; ?>
             <form method="POST" action="checkoutpage.php">
                 <button class="checkout-btn" id="checkout-btn" type="submit">Proceed to Checkout</button>

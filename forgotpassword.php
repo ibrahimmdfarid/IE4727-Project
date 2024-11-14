@@ -1,3 +1,74 @@
+<?php
+// Connect to the database
+$conn = new mysqli('localhost', 'root', '', 'project');
+
+// Check the connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Capture form data
+    $email = $_POST['email'];
+    $card_details = $_POST['card_details'];
+    $new_password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Step 1: Check if the email exists
+    $sql = "SELECT card_details FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($db_card_details);
+        $stmt->fetch();
+
+        // Step 2: Check if the entered card number matches
+        if ($db_card_details === $card_details) {
+            // Step 3: Check if new password and confirm password match
+            if ($new_password === $confirm_password) {
+                // Step 4: Hash the new password and update it in the database
+                $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+                
+                $update_sql = "UPDATE users SET password = ? WHERE email = ?";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->bind_param("ss", $hashed_password, $email);
+                
+                if ($update_stmt->execute()) {
+                    echo "<script>
+                            alert('Password updated successfully.');
+                          </script>";
+                } else {
+                    echo "<script>
+                            alert('Error updating password.');
+                          </script>";
+                }
+                
+                $update_stmt->close();
+                } else {
+                    echo "<script>
+                            alert('Passwords do not match.');
+                          </script>";
+                }
+                } else {
+                    echo "<script>
+                            alert('Card number is incorrect.');
+                          </script>";
+                }
+                } else {
+                    echo "<script>
+                            alert('Email does not exist.');
+                          </script>";
+                }
+
+    $stmt->close();
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -213,36 +284,26 @@
     </div>
 </header>
     
-<form method="POST" action="loginpage.php">
+<form method="POST">
     <div class="container">
-        <div class="centered-text">Log In</div>
+        <div class="centered-text">Change Password</div>
 
         <div class="label">E-Mail</div>
         <input type="email" name="email" class="input-field" placeholder="Enter your email" required>
-
-        <div class="label">Password</div>
-        <input type="password" name="password" class="input-field" placeholder="Enter your password" required>
-
-        <div class="forgot-password"><a href="forgotpassword.php">Forgot your password?</a></div>
-
+        <div class="label">Card Details</div>
+        <input type="text" name="card_details" class="input-field" placeholder="Enter card number for verification" required>
+        <div class="label">New Password</div>
+        <input type="password" class="input-field" id="password" name="password" placeholder="Enter your password" required>
+        <div class="label">Confirm Password</div>
+        <input type="password" class="input-field" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
         <button type="submit" name="login" class="sign-in-button">Sign In</button>
-
     </div>
 </form>
-
-<div class="sign-up-container">
-    <p>Don't have an account? <a href="signup_page.php" class="sign-up-button">Sign up here!</a></p>
-</div>
-
 
 <footer>
     <p>Store Address: 123 Main Street, City, Country</p>
     <p>Contact Number: +123 456 7890</p>
     <p><a href="contactpage.php">Contact Us!</a></p>
 </footer>
-
-<!-- <script src="loginpage.js"></script> -->
-
-
 </body>
 </html>
