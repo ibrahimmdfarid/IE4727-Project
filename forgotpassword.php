@@ -296,7 +296,7 @@ $conn->close();
         <input type="password" class="input-field" id="password" name="password" placeholder="Enter your password" required>
         <div class="label">Confirm Password</div>
         <input type="password" class="input-field" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
-        <button type="submit" name="login" class="sign-in-button">Sign In</button>
+        <button type="submit" name="login" class="sign-in-button">Change Password</button>
     </div>
 </form>
 
